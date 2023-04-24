@@ -14,7 +14,7 @@ class Sortie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $idSortie = null;
+    private ?int $id = null;
 
     #[ORM\Column(length: 50)]
     private ?string $nom = null;
@@ -64,7 +64,7 @@ class Sortie
 
     public function getId(): ?int
     {
-        return $this->idSortie;
+        return $this->id;
     }
 
     public function getNom(): ?string

@@ -13,7 +13,7 @@ class Ville
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $idVille = null;
+    private ?int $id = null;
 
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
@@ -31,7 +31,7 @@ class Ville
 
     public function getId(): ?int
     {
-        return $this->idVille;
+        return $this->id;
     }
 
     public function getNom(): ?string

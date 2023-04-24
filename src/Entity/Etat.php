@@ -14,7 +14,7 @@ class Etat
     #[ORM\GeneratedValue]
     #[ORM\Column]
     # 0 Créée, 1 Ouverte, 2 Clôturée, 3 Activité en cours, 4 Activité passée, 5 Activité annulée
-    private ?int $idEtat = null;
+    private ?int $id = null;
 
     #[ORM\Column]
     private ?int $libelle = null;
@@ -29,7 +29,7 @@ class Etat
 
     public function getId(): ?int
     {
-        return $this->idEtat;
+        return $this->id;
     }
 
     public function getLibelle(): ?int

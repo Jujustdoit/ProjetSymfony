@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Nom;
+use App\Entity\Ville;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Nom>
+ * @extends ServiceEntityRepository<Ville>
  *
- * @method Nom|null find($id, $lockMode = null, $lockVersion = null)
- * @method Nom|null findOneBy(array $criteria, array $orderBy = null)
- * @method Nom[]    findAll()
- * @method Nom[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Ville|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Ville|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Ville[]    findAll()
+ * @method Ville[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class NomRepository extends ServiceEntityRepository
+class VilleRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Nom::class);
+        parent::__construct($registry, Ville::class);
     }
 
-    public function save(Nom $entity, bool $flush = false): void
+    public function save(Ville $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class NomRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Nom $entity, bool $flush = false): void
+    public function remove(Ville $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class NomRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Nom[] Returns an array of Nom objects
+//     * @return Ville[] Returns an array of Ville objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class NomRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Nom
+//    public function findOneBySomeField($value): ?Ville
 //    {
 //        return $this->createQueryBuilder('n')
 //            ->andWhere('n.exampleField = :val')

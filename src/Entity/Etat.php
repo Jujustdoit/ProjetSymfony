@@ -17,7 +17,7 @@ class Etat
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $libelle = null;
+    private ?string $libelle = null;
 
     #[ORM\OneToMany(mappedBy: 'etat', targetEntity: sortie::class)]
     private Collection $sorties;

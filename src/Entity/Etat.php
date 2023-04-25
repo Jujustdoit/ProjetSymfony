@@ -14,10 +14,10 @@ class Etat
     #[ORM\GeneratedValue]
     #[ORM\Column]
     # 0 Créée, 1 Ouverte, 2 Clôturée, 3 Activité en cours, 4 Activité passée, 5 Activité annulée
-    private ?int $idEtat = null;
+    private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $libelle = null;
+    #[ORM\Column(length: 20)]
+    private ?string $libelle = null;
 
     #[ORM\OneToMany(mappedBy: 'etat', targetEntity: sortie::class)]
     private Collection $sorties;
@@ -29,15 +29,15 @@ class Etat
 
     public function getId(): ?int
     {
-        return $this->idEtat;
+        return $this->id;
     }
 
-    public function getLibelle(): ?int
+    public function getLibelle(): ?string
     {
         return $this->libelle;
     }
 
-    public function setLibelle(int $libelle): self
+    public function setLibelle(string $libelle): self
     {
         $this->libelle = $libelle;
 

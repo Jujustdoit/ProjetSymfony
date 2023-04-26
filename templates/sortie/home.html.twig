@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello SortieController!{% endblock %}
+{% block title %}Affichage des sorties par campus{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/sortie.css') }}">
+{% endblock %}
 
 {% block body %}
     <div>
@@ -11,7 +15,7 @@
     <h2>Filtrer les sorties</h2>
 
     {# TODO faire les filtres de recherch>#}
-    <table>
+    <table class="table">
         <thead>
         <tr>
             <th>Nom de la sortie</th>

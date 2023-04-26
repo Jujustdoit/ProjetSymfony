@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -18,30 +17,21 @@ class Sortie
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'La saisie de ce champ est obligatoire')]
-    #[Assert\Length(min:3, max:50, minMessage:'Le nom doit comporter au moins 3 caractères', maxMessage: 'La longueur du nom est limité à 50 caractères')]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Assert\NotBlank(message: 'La saisie de ce champ est obligatoire')]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'La saisie de ce champ est obligatoire')]
-    #[Assert\GreaterThanOrEqual(60, message: 'la sortie doit durée au moins 60 minutes')]
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Assert\NotBlank(message: 'La saisie de ce champ est obligatoire')]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'La saisie de ce champ est obligatoire')]
-    #[Assert\GreaterThanOrEqual(2, message: 'Le nombre d\'inscriptions doit être supérieur à 2')]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Length(min:3, max:255, minMessage:'La description doit comporter au moins 3 caractères', maxMessage: 'La description est limitée à 255 caractères')]
     private ?string $infosSortie = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
@@ -58,19 +48,15 @@ class Sortie
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
-    # Un participant peut être organisateur de plusieurs sorties
-    private ?Participant $participant = null;
+    private ?Participant $organisateur = null;
 
-    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'inscriptionSortie')]
-    # Plusieurs participants peuvent être inscrits à plusieurs sorties
-    # Plusieurs sorties peuvent référencer plusieurs participants
+    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'inscriptionsSorties')]
     private Collection $participants;
 
     public function __construct()
     {
         $this->participants = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
@@ -101,12 +87,12 @@ class Sortie
         return $this;
     }
 
-    public function getDuree(): ?int
+    public function getDuree(): ?\DateInterval
     {
         return $this->duree;
     }
 
-    public function setDuree(int $duree): self
+    public function setDuree(\DateInterval $duree): self
     {
         $this->duree = $duree;
 
@@ -185,14 +171,14 @@ class Sortie
         return $this;
     }
 
-    public function getParticipant(): ?Participant
+    public function getOrganisateur(): ?Participant
     {
-        return $this->participant;
+        return $this->organisateur;
     }
 
-    public function setParticipant(?Participant $participant): self
+    public function setOrganisateur(?Participant $organisateur): self
     {
-        $this->participant = $participant;
+        $this->organisateur = $organisateur;
 
         return $this;
     }
@@ -209,7 +195,7 @@ class Sortie
     {
         if (!$this->participants->contains($participant)) {
             $this->participants->add($participant);
-            $participant->addInscriptionSortie($this);
+            $participant->addInscriptionsSorty($this);
         }
 
         return $this;
@@ -218,10 +204,9 @@ class Sortie
     public function removeParticipant(Participant $participant): self
     {
         if ($this->participants->removeElement($participant)) {
-            $participant->removeInscriptionSortie($this);
+            $participant->removeInscriptionsSorty($this);
         }
 
         return $this;
     }
-
 }

@@ -16,7 +16,7 @@ class Etat
     # 0 Créée, 1 Ouverte, 2 Clôturée, 3 Activité en cours, 4 Activité passée, 5 Activité annulée
     private ?int $id = null;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column]
     private ?string $libelle = null;
 
     #[ORM\OneToMany(mappedBy: 'etat', targetEntity: sortie::class)]
@@ -32,12 +32,12 @@ class Etat
         return $this->id;
     }
 
-    public function getLibelle(): ?string
+    public function getLibelle(): ?int
     {
         return $this->libelle;
     }
 
-    public function setLibelle(string $libelle): self
+    public function setLibelle(int $libelle): self
     {
         $this->libelle = $libelle;
 

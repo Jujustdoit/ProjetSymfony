@@ -19,23 +19,32 @@ class SortieType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
         $builder
             ->add('nom', null, ['label'=>'Nom de la sortie : ', 'required'=>true])
             ->add('dateHeureDebut', DateTimeType::class,
                 ['label'=>'Date et heure de la sortie : ',
                     'date_widget'=>'single_text',
                     'time_widget'=>'single_text',
+                    'required'=>true,
                     'html5'=>true,
                    // 'format'=>'dd/MM/yyyy HH:mm'
                    ])
             ->add('dateLimiteInscription', DateType::class,
                 ['label'=>'Date limite d\'inscription : ',
                     'widget'=>'single_text',
+                    'required'=>true,
                     'html5'=>true,
                     //'format'=>'dd/MM/yyyy'
                 ])
-            ->add('nbInscriptionsMax', null,['label'=>'Nombres de places : '])
-            ->add('duree', null,['label'=>'Durée : '])
+            ->add('nbInscriptionsMax', null,
+                [   'label'=>'Nombres de places : ',
+                    'required'=>true
+            ])
+            ->add('duree', null,
+                [   'label'=>'Durée : ',
+                    'required'=>true
+                ])
             ->add('infosSortie', TextareaType::class,
                 ['label'=>'Description et infos : ',
                     'attr'=>['rows'=>5]
@@ -46,11 +55,13 @@ class SortieType extends AbstractType
                     'choice_label'=>'nom'
                 ])
 
-            ->add('lieu', EntityType::class,
+
+            /*->add('lieu', EntityType::class,
                 [   'label'=>'Lieu : ',
                     'class'=>Lieu::class,
                     'choice_label'=>'nom'
-            ])
+            ])*/
+
 
             ->add('enregistrer', SubmitType::class, ['label'=> "Enregistrer"])
             ->add('publier', SubmitType::class, ['label'=> "Publier la sortie"])

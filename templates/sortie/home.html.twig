@@ -43,7 +43,7 @@
                 </td>
                 <td>
                     {# TODO penser à mettre les liens dans les href #}
-                    {% if (sortie.etat.libelle == 'Ouverte') or (sortie.etat.libelle == 'Cloturée') %}
+                    {% if (sortie.etat.libelle == 'Ouverte') or (sortie.etat.libelle == 'Clôturée') %}
                         <a href="">Afficher</a>
                     {% endif %}
                     {% if app.user in sortie.participants %}
@@ -56,7 +56,7 @@
                             <a href="">Modifier</a>
                             - <a href="">Publier</a>
                         {% endif %}
-                        {% if ( sortie.etat.libelle == 'Ouverte') or (sortie.etat.libelle == 'Cloturée') %}
+                        {% if ( sortie.etat.libelle == 'Ouverte') or (sortie.etat.libelle == 'Clôturée') %}
                             - <a href="">Annuler</a>
                         {% endif %}
                     {% endif %}

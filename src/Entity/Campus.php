@@ -21,8 +21,10 @@ class Campus
     #[ORM\OneToMany(mappedBy: 'campus', targetEntity: sortie::class)]
     private Collection $sortiesCampus;
 
-    #[ORM\OneToMany(mappedBy: 'campus', targetEntity: participant::class)]
+    #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Participant::class)]
     private Collection $participantsCampus;
+
+
 
     public function __construct()
     {
@@ -78,14 +80,14 @@ class Campus
     }
 
     /**
-     * @return Collection<int, participant>
+     * @return Collection<int, Participant>
      */
     public function getParticipantsCampus(): Collection
     {
         return $this->participantsCampus;
     }
 
-    public function addParticipantsCampus(participant $participantsCampus): self
+    public function addParticipantsCampus(Participant $participantsCampus): self
     {
         if (!$this->participantsCampus->contains($participantsCampus)) {
             $this->participantsCampus->add($participantsCampus);
@@ -95,7 +97,7 @@ class Campus
         return $this;
     }
 
-    public function removeParticipantsCampus(participant $participantsCampus): self
+    public function removeParticipantsCampus(Participant $participantsCampus): self
     {
         if ($this->participantsCampus->removeElement($participantsCampus)) {
             // set the owning side to null (unless already changed)

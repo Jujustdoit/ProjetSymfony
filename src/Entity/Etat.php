@@ -16,8 +16,8 @@ class Etat
     private ?int $id = null;
 
     #[ORM\Column]
-    # Créée, Ouverte, Clôturée, Activité en cours, Activité passée, Activité annulée
-    private ?string $libelle = null;
+    # 0 Créée, 1 Ouverte, 2 Clôturée, 3 Activité en cours, 4 Activité passée, 5 Activité annulée
+    private ?int $libelle = null;
 
     #[ORM\OneToMany(mappedBy: 'etat', targetEntity: sortie::class)]
     private Collection $sorties;

@@ -48,19 +48,15 @@ class Sortie
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
-    # Un participant peut être organisateur de plusieurs sorties
-    private ?Participant $participant = null;
+    private ?Participant $organisateur = null;
 
-    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'inscriptionSortie')]
-    # Plusieurs participants peuvent être inscrits à plusieurs sorties
-    # Plusieurs sorties peuvent référencer plusieurs participants
+    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'inscriptionsSorties')]
     private Collection $participants;
 
     public function __construct()
     {
         $this->participants = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
@@ -175,14 +171,14 @@ class Sortie
         return $this;
     }
 
-    public function getParticipant(): ?Participant
+    public function getOrganisateur(): ?Participant
     {
-        return $this->participant;
+        return $this->organisateur;
     }
 
-    public function setParticipant(?Participant $participant): self
+    public function setOrganisateur(?Participant $organisateur): self
     {
-        $this->participant = $participant;
+        $this->organisateur = $organisateur;
 
         return $this;
     }
@@ -199,7 +195,7 @@ class Sortie
     {
         if (!$this->participants->contains($participant)) {
             $this->participants->add($participant);
-            $participant->addInscriptionSortie($this);
+            $participant->addInscriptionsSorty($this);
         }
 
         return $this;
@@ -208,10 +204,9 @@ class Sortie
     public function removeParticipant(Participant $participant): self
     {
         if ($this->participants->removeElement($participant)) {
-            $participant->removeInscriptionSortie($this);
+            $participant->removeInscriptionsSorty($this);
         }
 
         return $this;
     }
-
 }

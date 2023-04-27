@@ -6,14 +6,28 @@ use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-class Participant
+class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(length: 180, unique: true)]
+    private ?string $email = null;
+
+    #[ORM\Column]
+    private array $roles = [];
+
+    /**
+     * @var string The hashed password
+     */
+    #[ORM\Column]
+    private ?string $password = null;
 
     #[ORM\Column(length: 50)]
     private ?string $nom = null;
@@ -21,14 +35,8 @@ class Participant
     #[ORM\Column(length: 50)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 10, nullable: true)]
+    #[ORM\Column(length: 10)]
     private ?string $telephone = null;
-
-    #[ORM\Column(length: 100)]
-    private ?string $mail = null;
-
-    #[ORM\Column(length: 50)]
-    private ?string $motPasse = null;
 
     #[ORM\Column(length: 50)]
     private ?string $pseudo = null;
@@ -39,32 +47,93 @@ class Participant
     #[ORM\Column]
     private ?bool $actif = null;
 
-    #[ORM\Column]
-    #0 pour administrateur, 1 pour organisateur et 2 pour participant
-    private ?int $role = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
     #[ORM\ManyToOne(inversedBy: 'participantsCampus')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Campus $campus = null;
+    private ?campus $campus = null;
 
-    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: sortie::class)]
+    #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: sortie::class)]
     private Collection $sorties;
 
     #[ORM\ManyToMany(targetEntity: sortie::class, inversedBy: 'participants')]
-    private Collection $inscriptionSortie;
+    private Collection $inscriptionsSorties;
 
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
-        $this->inscriptionSortie = new ArrayCollection();
+        $this->inscriptionsSorties = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
     public function getNom(): ?string
@@ -96,33 +165,9 @@ class Participant
         return $this->telephone;
     }
 
-    public function setTelephone(string $telephone): self
+    public function setTelephone(?string $telephone): self
     {
         $this->telephone = $telephone;
-
-        return $this;
-    }
-
-    public function getMail(): ?string
-    {
-        return $this->mail;
-    }
-
-    public function setMail(string $mail): self
-    {
-        $this->mail = $mail;
-
-        return $this;
-    }
-
-    public function getMotPasse(): ?string
-    {
-        return $this->motPasse;
-    }
-
-    public function setMotPasse(string $motPasse): self
-    {
-        $this->motPasse = $motPasse;
 
         return $this;
     }
@@ -163,18 +208,6 @@ class Participant
         return $this;
     }
 
-    public function getRole(): ?string
-    {
-        return $this->role;
-    }
-
-    public function setRole(string $role): self
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
     public function getImage(): ?string
     {
         return $this->image;
@@ -187,12 +220,12 @@ class Participant
         return $this;
     }
 
-    public function getCampus(): ?Campus
+    public function getCampus(): ?campus
     {
         return $this->campus;
     }
 
-    public function setCampus(?Campus $campus): self
+    public function setCampus(?campus $campus): self
     {
         $this->campus = $campus;
 
@@ -207,22 +240,22 @@ class Participant
         return $this->sorties;
     }
 
-    public function addSorty(sortie $sorty): self
+    public function addSortie(sortie $sortie): self
     {
-        if (!$this->sorties->contains($sorty)) {
-            $this->sorties->add($sorty);
-            $sorty->setParticipant($this);
+        if (!$this->sorties->contains($sortie)) {
+            $this->sorties->add($sortie);
+            $sortie->setOrganisateur($this);
         }
 
         return $this;
     }
 
-    public function removeSorty(sortie $sorty): self
+    public function removeSortie(sortie $sortie): self
     {
-        if ($this->sorties->removeElement($sorty)) {
+        if ($this->sorties->removeElement($sortie)) {
             // set the owning side to null (unless already changed)
-            if ($sorty->getParticipant() === $this) {
-                $sorty->setParticipant(null);
+            if ($sortie->getOrganisateur() === $this) {
+                $sortie->setOrganisateur(null);
             }
         }
 
@@ -232,23 +265,23 @@ class Participant
     /**
      * @return Collection<int, sortie>
      */
-    public function getInscriptionSortie(): Collection
+    public function getInscriptionsSorties(): Collection
     {
-        return $this->inscriptionSortie;
+        return $this->inscriptionsSorties;
     }
 
-    public function addInscriptionSortie(sortie $inscriptionSortie): self
+    public function addInscriptionsSortie(sortie $inscriptionssortie): self
     {
-        if (!$this->inscriptionSortie->contains($inscriptionSortie)) {
-            $this->inscriptionSortie->add($inscriptionSortie);
+        if (!$this->inscriptionsSorties->contains($inscriptionssortie)) {
+            $this->inscriptionsSorties->add($inscriptionssortie);
         }
 
         return $this;
     }
 
-    public function removeInscriptionSortie(sortie $inscriptionSortie): self
+    public function removeInscriptionsSortie(sortie $inscriptionssortie): self
     {
-        $this->inscriptionSortie->removeElement($inscriptionSortie);
+        $this->inscriptionsSorties->removeElement($inscriptionssortie);
 
         return $this;
     }

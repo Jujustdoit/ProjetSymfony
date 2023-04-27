@@ -21,7 +21,7 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function filtre($campus, $nomSortie, $dateMin, $dateMax, $organisateur, $inscrit, $pasInscrit, $sortiesPassees, $idOrganisateur): array {
+    public function filtrer($campus, $nomSortie, $dateMin, $dateMax, $organisateur, $inscrit, $pasInscrit, $sortiesPassees, $idOrganisateur): array {
 
         $qb = $this->createQueryBuilder('s')
             ->addSelect('e')

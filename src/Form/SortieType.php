@@ -63,8 +63,8 @@ class SortieType extends AbstractType
             ])*/
 
 
-            ->add('enregistrer', SubmitType::class, ['label'=> "Enregistrer"])
-            ->add('publier', SubmitType::class, ['label'=> "Publier la sortie"])
+            ->add('enregistrer', SubmitType::class, ['label'=> 'Enregistrer'])
+            ->add('publier', SubmitType::class, ['label'=> 'Publier la sortie'])
         ;
     }
 

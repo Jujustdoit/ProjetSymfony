@@ -9,12 +9,52 @@
 {% block body %}
     <div>
         <p>Date du jour : {{ "now"|date("d-m-Y") }}</p>
-        <p>Participant : </p>
+       {#  <p>Participant : {{ app.user.pseudo }}</p> #}
     </div>
 
-    <h2>Filtrer les sorties</h2>
+    <h3>Filtrer les sorties</h3>
 
-    {# TODO faire les filtres de recherch>#}
+    {{ form_start(criteres) }}
+        <div>
+            {{ form_label(criteres.campus) }}
+            {{ form_widget(criteres.campus) }}
+        </div>
+        <div>
+            {{ form_label(criteres.nomSortie) }}
+            {{ form_widget(criteres.nomSortie) }}
+        </div>
+        <div>
+            {{ form_label(criteres.dateMin) }}
+            {{ form_widget(criteres.dateMin) }}
+        </div>
+        <div>
+            {{ form_label(criteres.dateMax) }}
+            {{ form_widget(criteres.dateMax) }}
+        </div>
+        <div>
+            {{ form_label(criteres.organisateur) }}
+            {{ form_widget(criteres.organisateur) }}
+        </div>
+        <div>
+            {{ form_label(criteres.inscrit) }}
+            {{ form_widget(criteres.inscrit) }}
+        </div>
+        <div>
+            {{ form_label(criteres.pasInscrit) }}
+            {{ form_widget(criteres.pasInscrit) }}
+        </div>
+        <div>
+            {{ form_label(criteres.sortiesPassees) }}
+            {{ form_widget(criteres.sortiesPassees) }}
+        </div>
+        <div>
+            {{ form_label(criteres.recherche) }}
+            {{ form_widget(criteres.recherche) }}
+        </div>
+
+    {{ form_end(criteres) }}
+
+
     <table class="table">
         <thead>
         <tr>
@@ -31,7 +71,7 @@
         <tbody>
         {% for sortie in sorties %}
             <tr>
-                <th>{{ sortie.nom }}</th>
+                <td>{{ sortie.nom }}</td>
                 <td>{{ sortie.dateHeureDebut|date('d/m/Y h:i') }}</td>
                 <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
                 <td>{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</td>
@@ -46,7 +86,6 @@
                     <a href="">{{ sortie.organisateur.nom }}</a>
                 </td>
                 <td>
-                    {# TODO penser à mettre les liens dans les href #}
                     {% if (sortie.etat.libelle == 'Ouverte') or (sortie.etat.libelle == 'Clôturée') %}
                         <a href="">Afficher</a>
                     {% endif %}
@@ -58,7 +97,7 @@
                     {% if app.user == sortie.organisateur %}
                         {% if sortie.etat == 'Créée' %}
                             <a href="">Modifier</a>
-                            - <a href="">Publier</a>
+                            - <a href="{{ path('sortie_create') }}">Publier</a>
                         {% endif %}
                         {% if ( sortie.etat.libelle == 'Ouverte') or (sortie.etat.libelle == 'Clôturée') %}
                             - <a href="">Annuler</a>

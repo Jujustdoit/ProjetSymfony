@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Campus;
 use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Entity\Ville;
+use App\Form\FiltreType;
 use App\Form\LieuType;
 use App\Form\SortieType;
 use App\Form\VilleType;
@@ -13,7 +15,12 @@ use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,13 +30,55 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SortieController extends AbstractController
 {
-    #[Route('/', name: 'home')]
-    public function home(SortieRepository $sortieRepository): Response
+    #[Route('/home', name: 'home')]
+    public function home(Request $request, ParticipantRepository $participantRepository, SortieRepository $sortieRepository): Response
     {
-        $sorties = $sortieRepository->findAll();
-        $user = $this->getUser();
+        //$user = $this->getUser();
+        $user = $participantRepository->findOneBy(['nom'=>'Spinoz']);
 
-        return $this->render('sortie/home.html.twig', ['sorties' => $sorties,'participant' => $user]);
+        $criteresForm = $this->createFormBuilder()
+            ->add('campus', EntityType::class, [
+                'label'=>'Campus',
+                'class' => Campus::class,
+                'choice_label' => 'nom',
+                'placeholder' => 'Tous les campus',
+                'required' => false
+            ])
+            ->add('nomSortie', TextType::class,['label' => 'Le nom de la sortie contient : ','required'=> false])
+            ->add('dateMin',DateTimeType::class, array('widget' => 'single_text','label' => 'Entre ','required'=> false))
+            ->add('dateMax',DateTimeType::class, array('widget' => 'single_text','label' => 'et ','required'=> false))
+            ->add('organisateur', CheckboxType::class, ['label' => 'Sorties dont je suis l\'organisateur/trice','required' => false])
+            ->add('inscrit', CheckboxType::class, ['label' => 'Sorties auxquelles je suis inscrit/e','required' => false])
+            ->add('pasInscrit', CheckboxType::class, ['label' => 'Sorties auxquelles je ne suis pas inscrit/e','required' => false])
+            ->add('sortiesPassees', CheckboxType::class, ['label' => 'Sorties passées','required' => false])
+            ->add('recherche', SubmitType::class, ['label' => 'Rechercher'])
+            ->getForm()
+        ;
+
+        $criteresForm->handleRequest($request);
+
+        if ($criteresForm->isSubmitted() && $criteresForm->isValid()) {
+            $donnees = $criteresForm->getData();
+            $sorties = $sortieRepository->filtrer(
+                $donnees['campus'],
+                $donnees['nomSortie'],
+                $donnees['dateMin'],
+                $donnees['dateMax'],
+                $donnees['organisateur'],
+                $donnees['inscrit'],
+                $donnees['pasInscrit'],
+                $donnees['sortiesPassees'],
+                $user->getId()
+                                        );
+        } else {
+            $sorties = $sortieRepository->findAll();
+        }
+
+        return $this->render('sortie/home.html.twig',
+                                ['sorties' => $sorties,
+                                'participant' => $user,
+                                'criteres'=>$criteresForm->createView()
+                                ]);
     }
 
     #[Route('/create', name: 'create')]
@@ -37,7 +86,7 @@ class SortieController extends AbstractController
     public function create(Request $request, EtatRepository $etatRepository, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager): Response
     {
         //$organisateur = $this->getUser();
-        $organisateur = $participantRepository->findOneBy(['nom'=>'Thib']);
+        $organisateur = $participantRepository->findOneBy(['nom'=>'Spinoz']);
 
         $sortie = new Sortie();
         $sortie->setOrganisateur($organisateur);
@@ -53,6 +102,7 @@ class SortieController extends AbstractController
         $villeForm->handleRequest($request);
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
+            if ($organisateur->getRoles() == ["ROLE_PARTICIPANT"]) $organisateur->setRoles(["ROLE_ORGANISATEUR"]);
 
             if ($sortieForm->get('enregistrer')) {
                 $sortie->setEtat($etatRepository->findOneBy(['libelle'=>'Créée']));

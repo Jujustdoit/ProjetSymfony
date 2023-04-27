@@ -21,6 +21,52 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
+    public function filtre($campus, $nomSortie, $dateMin, $dateMax, $organisateur, $inscrit, $pasInscrit, $sortiesPassees, $idOrganisateur): array {
+
+        $qb = $this->createQueryBuilder('s')
+            ->addSelect('e')
+            ->join('s.etat', 'e');
+
+        if($campus) {
+            $qb->where('s.campus = :campus')
+                ->setParameter('campus', $campus);
+        }
+
+        if ($nomSortie) {
+            $qb->andWhere($qb->expr()->like('s.nom',':stringRecherche'))
+                ->setParameter('stringRecherche',"%{$nomSortie}%");
+        }
+        if($dateMin && $dateMax){
+            $qb->andWhere($qb->expr()->between('s.dateDebut',':dateMin',':dateMax'))
+                ->setParameter('dateMin',$dateMin)
+                ->setParameter('dateMax',$dateMax);
+        }
+        if($organisateur){
+            $qb->andWhere($qb->expr()->eq('s.organisateur', ':idOrganisateur'))
+                ->setParameter('idOrganisateur',$idOrganisateur);
+        }
+        if($inscrit == true && $pasInscrit == false){
+            $qb->addSelect('p')
+                ->join('s.participants', 'p')
+                ->andWhere($qb->expr()->isMemberOf(':participant', 's.participants'))
+                ->setParameter('participant', $inscrit);
+        }
+        if($inscrit == false && $pasInscrit == true) {
+            $qb->addSelect('p')
+                ->leftJoin('s.participants', 'p')
+                ->andWhere(':participant NOT MEMBER OF s.participants')
+                ->setParameter('participant', $idOrganisateur);
+        }
+        if($sortiesPassees == true){
+            $qb->andWhere('s.etat = :etat')
+                ->setParameter('etat',$sortiesPassees);
+        }
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+    }
+
     public function save(Sortie $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

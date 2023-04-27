@@ -54,16 +54,6 @@
             {{ form_errors(sortieForm.campus) }}
         </div>
 
-        {# <div>
-            {{ form_label(sortieForm.lieu) }}
-            {{ form_widget(sortieForm.lieu) }}
-            <a href="{{ path('app_lieu') }}">
-                <img src="{{ asset('img/bouton-plus.png') }}" width="30" height="30" title="Créez un lieu !" alt="Créer un lieu">
-            </a>
-
-            {{ form_errors(sortieForm.lieu) }}
-        </div> #}
-
         <h3>Créer un lieu de sortie</h3>
 
         <div>
@@ -114,7 +104,7 @@
         {{ form_end(sortieForm) }}
 
             <button type="button">
-                <a href="#">Annuler</a>
+                <a href="{{ path('sortie_home') }}">Annuler</a>
             </button>
         </div>
 

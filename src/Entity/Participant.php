@@ -35,7 +35,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 10, nullable: true)]
+    #[ORM\Column(length: 10)]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 50)]
@@ -240,22 +240,22 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->sorties;
     }
 
-    public function addSorty(sortie $sorty): self
+    public function addSortie(sortie $sortie): self
     {
-        if (!$this->sorties->contains($sorty)) {
-            $this->sorties->add($sorty);
-            $sorty->setOrganisateur($this);
+        if (!$this->sorties->contains($sortie)) {
+            $this->sorties->add($sortie);
+            $sortie->setOrganisateur($this);
         }
 
         return $this;
     }
 
-    public function removeSorty(sortie $sorty): self
+    public function removeSortie(sortie $sortie): self
     {
-        if ($this->sorties->removeElement($sorty)) {
+        if ($this->sorties->removeElement($sortie)) {
             // set the owning side to null (unless already changed)
-            if ($sorty->getOrganisateur() === $this) {
-                $sorty->setOrganisateur(null);
+            if ($sortie->getOrganisateur() === $this) {
+                $sortie->setOrganisateur(null);
             }
         }
 
@@ -270,18 +270,18 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->inscriptionsSorties;
     }
 
-    public function addInscriptionsSorty(sortie $inscriptionsSorty): self
+    public function addInscriptionsSortie(sortie $inscriptionssortie): self
     {
-        if (!$this->inscriptionsSorties->contains($inscriptionsSorty)) {
-            $this->inscriptionsSorties->add($inscriptionsSorty);
+        if (!$this->inscriptionsSorties->contains($inscriptionssortie)) {
+            $this->inscriptionsSorties->add($inscriptionssortie);
         }
 
         return $this;
     }
 
-    public function removeInscriptionsSorty(sortie $inscriptionsSorty): self
+    public function removeInscriptionsSortie(sortie $inscriptionssortie): self
     {
-        $this->inscriptionsSorties->removeElement($inscriptionsSorty);
+        $this->inscriptionsSorties->removeElement($inscriptionssortie);
 
         return $this;
     }

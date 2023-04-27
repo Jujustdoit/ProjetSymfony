@@ -32,12 +32,12 @@ class Etat
         return $this->id;
     }
 
-    public function getLibelle(): ?int
+    public function getLibelle(): ?string
     {
         return $this->libelle;
     }
 
-    public function setLibelle(int $libelle): self
+    public function setLibelle(string $libelle): self
     {
         $this->libelle = $libelle;
 

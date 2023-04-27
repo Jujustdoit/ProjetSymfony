@@ -11,7 +11,7 @@ use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Entity\Ville;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Faker;
+use Faker\Factory;
 
 class AppFixtures extends Fixture
 
@@ -45,7 +45,7 @@ class AppFixtures extends Fixture
         }
 
         //utilisation du faker en français @valeur = 1201
-        $faker = Faker\Factory::create('fr_FR');
+        $faker = Factory::create('fr_FR');
         $faker->seed(1201);
 
         //création de 10 participants
@@ -58,6 +58,7 @@ class AppFixtures extends Fixture
             $participants[$i]->setPseudo($faker->name);
             $participants[$i]->setAdministrateur(true);
             $participants[$i]->setActif(true);
+            $participants[$i]->setTelephone($faker->phoneNumber);
 
 
             $password = $this->hasher->hashPassword($participants[$i], 'pass_1201');
@@ -70,10 +71,10 @@ class AppFixtures extends Fixture
         //création des villes
         $villes = [];
         for ($i = 0; $i < 10; $i++) {
-            $ville[$i] = new Ville();
-            $ville[$i]->setNom($faker->word);
-            $ville[$i]->setCodePostal($faker->postcode);
-            $manager->persist((object)$ville);
+            $ville = new Ville();
+            $ville->setNom($faker->word);
+            $ville->setCodePostal((int)($faker->postcode));
+            $manager->persist($ville);
             $villes[] = $ville;
         }
 
@@ -88,7 +89,6 @@ class AppFixtures extends Fixture
             $lieux[$i]->setLongitude(($faker->longitude));
             $manager->persist($lieux[$i]);
         }
-        $manager->flush();
 
         //création des sorties
 
@@ -106,15 +106,15 @@ class AppFixtures extends Fixture
             $sortie->setNom($sortieNom[mt_rand(0, count($sortieNom) - 1)] . $towns[$i]);
             $sortie->setInfosSortie($sortieDescription[mt_rand(0, count($sortieDescription) - 1)] . $towns[$i]);
             $sortie->setCampus($campuses[mt_rand(0, 2)]);
-            $sortie->setOrganisateur($participants[mt_rand(0, 14)]);
+            $sortie->setOrganisateur($participants[mt_rand(0, 9)]);
             //$minutes = strval(mt_rand(5, 120)) . ' minutes';
             $sortie->setDuree($faker->randomNumber(3, false));
             $sortie->setNbInscriptionsMax(mt_rand(2, 25));
-            $date1 = $faker->dateTimeBetween('-40days', '+40days');
+            $date1 = $faker->dateTimeBetween('now', '+40 days');
+            $date2 = $faker->dateTimeBetween('-40 days', 'now');
 
-
-            $dateString = date_format($date1, 'd-m-Y');
-            $date2 = $faker->dateTimeBetween($dateString, '-7days');
+//            $dateString = date_format($date1, 'd-m-Y');
+//            $date2 = $faker->dateTimeBetween($dateString, '+7 days');
             if ($date1 > $date2)
             {
                 $sortie->setDateHeureDebut($date1);

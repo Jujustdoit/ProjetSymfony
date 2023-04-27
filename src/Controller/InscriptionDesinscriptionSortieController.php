@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Sortie;
-use App\Entity\Etat;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -12,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class InscriptionDesinscriptionSortieController extends AbstractController
 {
-    #[Route('/sortie/{id}/inscrire',
+    #[Route('/sortie/inscrire/{idSortie}/{idUser}',
         name: 'inscrire')]
 
     public function inscrire(int $id)
@@ -23,7 +22,7 @@ class InscriptionDesinscriptionSortieController extends AbstractController
 
         //TODO vérifier la condition état de la sortie
         //on vérifie que la sortie soit ouverte
-        if ($sortie->getEtat()->getNom() !== "ouvert")
+        if ($sortie->getEtat()->getNom() !== "Ouvert")
         {
             $this->addFlash("danger", "Cette sortie n'est pas ouverte aux inscriptions !");
             return $this->redirectToRoute('/sorties/details/{id}', ["id" => $sortie->getId()]);

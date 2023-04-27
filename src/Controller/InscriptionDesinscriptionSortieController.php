@@ -21,8 +21,14 @@ class InscriptionDesinscriptionSortieController extends AbstractController
         $SortieRepository = $this->getDoctrine()->getRepository(Sortie::class);
         $sortie = $SortieRepository->find($id);
 
-        //TODO on check si la sortie est dans l'état open
-        if ($sortie->getEtat()->get)
+        //TODO vérifier la condition état de la sortie
+        //on vérifie que la sortie soit ouverte
+        if ($sortie->getEtat()->getNom() !== "ouvert")
+        {
+            $this->addFlash("danger", "Cette sortie n'est pas ouverte aux inscriptions !");
+            return $this->redirectToRoute('/sorties/details/{id}', ["id" => $sortie->getId()]);
+        }
+
             // inscription de l'utilisateur s'il reste de la place
             if (count($sortie->getParticipants()) < $sortie->getNbInscriptionsMax)
             {
@@ -36,8 +42,9 @@ class InscriptionDesinscriptionSortieController extends AbstractController
                 $this->addFlash('danger', "Dommage il n'y a plus de places !");
             }
 
-        return $this->redirectToRoute('home');
-    }
+            return $this->redirectToRoute('home');
+        }
+
 
     #[Route('/sortie/{id}/desinscrire',
         name: 'desinscrire')]
@@ -58,6 +65,7 @@ class InscriptionDesinscriptionSortieController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $em->flush();
 
+        $this->addFlash("success", "Vous êtes désinscrit !");
         return $this->redirectToRoute('home');
     }
 }

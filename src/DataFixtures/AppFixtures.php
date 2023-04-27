@@ -17,6 +17,10 @@ class AppFixtures extends Fixture
 
 {
     private UserPasswordHasherInterface $hasher;
+    public function __construct(UserPasswordHasherInterface $hasher)
+    {
+        $this->hasher = $hasher;
+    }
 
     public function load(ObjectManager $manager): void
     {
@@ -31,7 +35,7 @@ class AppFixtures extends Fixture
         }
 
         //fixtures des états (imcomplet juste pour tester)
-        $etatLibelle = ['Créee', 'Ouverte', 'Clôturée'];
+        $etatLibelle = [0, 1, 2];
         $etats = [];
         foreach ($etatLibelle as $libelle) {
             $etat = new Etat();
@@ -96,7 +100,7 @@ class AppFixtures extends Fixture
         ];
 
         $sortieNom = ['Sortie à ', 'Allons à ', 'Visite de ', 'Fête à ', 'Let\'s go to '];
-        $sortieDescription = ['Partons tous à pour le week-end à ', 'Allons nous amuser à ', 'Rendez-vous à l\'école puis on part tous en bus pour aller à ', 'Fête à '];
+        $sortieDescription = ['Partons tous à ', 'Allons nous amuser à ', 'Rendez-vous à l\'école pour aller à ', 'Fête à '];
         for ($i = 0; $i < count($towns); $i++) {
             $sortie = new Sortie();
             $sortie->setNom($sortieNom[mt_rand(0, count($sortieNom) - 1)] . $towns[$i]);

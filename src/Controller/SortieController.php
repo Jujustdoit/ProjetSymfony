@@ -34,7 +34,7 @@ class SortieController extends AbstractController
     public function home(Request $request, ParticipantRepository $participantRepository, SortieRepository $sortieRepository): Response
     {
         //$user = $this->getUser();
-        $user = $participantRepository->findOneBy(['nom'=>'Spinoz']);
+        $user = $participantRepository->findOneBy(['nom'=>'Letellier']);
 
         $criteresForm = $this->createFormBuilder()
             ->add('campus', EntityType::class, [
@@ -166,7 +166,7 @@ class SortieController extends AbstractController
             $this->addFlash('danger', "Dommage il n'y a plus de places !");
         }
 
-        return $this->redirectToRoute('home');
+        return $this->redirectToRoute('sortie_home');
     }
 
 
@@ -190,6 +190,6 @@ class SortieController extends AbstractController
         $em->flush();
 
         $this->addFlash("success", "Vous êtes désinscrit !");
-        return $this->redirectToRoute('home');
+        return $this->redirectToRoute('sortie_home');
     }
 }

@@ -6,13 +6,14 @@ use App\Entity\Campus;
 use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Entity\Ville;
-use App\Form\FiltreType;
 use App\Form\LieuType;
 use App\Form\SortieType;
 use App\Form\VilleType;
 use App\Repository\EtatRepository;
+use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
+use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -86,7 +87,7 @@ class SortieController extends AbstractController
     public function create(Request $request, EtatRepository $etatRepository, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager): Response
     {
         //$organisateur = $this->getUser();
-        $organisateur = $participantRepository->findOneBy(['nom'=>'Spinoz']);
+        $organisateur = $participantRepository->findOneBy(['nom'=>'Letellier']);
 
         $sortie = new Sortie();
         $sortie->setOrganisateur($organisateur);
@@ -127,7 +128,6 @@ class SortieController extends AbstractController
                 $this->addFlash('success','La sortie est créée !!');
             } elseif ($sortieForm->get('publier')) {
                 $this->addFlash('success','La sortie est publiée !!');
-
             }
             return $this->redirectToRoute('sortie_home');
         }
@@ -137,59 +137,64 @@ class SortieController extends AbstractController
 
     }
 
-    #[Route('/sortie/inscrire/{id}',
-        name: 'inscrire')]
-
-    public function inscrire($id, SortieRepository $sortieRepository, EntityManagerInterface $em, EtatRepository $etatRepository)
+    #[Route('/update/{id}', name: 'update')]
+    //#[isGranted(['ROLE_PARTICIPANT'])]
+    public function update($id,Request $request, SortieRepository $sortieRepository, LieuRepository $lieuRepository, VilleRepository $villeRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
-        //recherche de la sortie by $id
-        $sortieRepository = $this->getDoctrine()->getRepository(Sortie::class);
+
         $sortie = $sortieRepository->find($id);
+        if (!$sortie) {
+            throw $this->createNotFoundException("Sortie inexistante");
+        }
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
 
-        //TODO vérifier la condition état de la sortie
-        //on vérifie que la sortie soit ouverte
-        if ($sortie->getEtat()->getNom() !== "Ouvert")
-        {
-            $this->addFlash("danger", "Cette sortie n'est pas ouverte aux inscriptions !");
-            return $this->redirectToRoute('/sorties/details/{id}', ["id" => $sortie->getId()]);
+        $sortieForm->handleRequest($request);
+
+        $lieu = $lieuRepository->find($sortie->getLieu()->getId());
+        $lieuForm = $this->createForm(LieuType::class, $lieu);
+        $lieuForm->handleRequest($request);
+
+        $ville = $villeRepository->find($lieu->getVille()->getId());
+        $villeForm = $this->createForm(VilleType::class, $ville);
+        $villeForm->handleRequest($request);
+
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
+
+            $lieu->setVille($ville);
+            $sortie->setLieu($lieu);
+
+            if ($sortieForm->get('supprimer')->isClicked()) {
+                $entityManager->remove($sortie);
+                $entityManager->flush();
+                $this->addFlash('success','La sortie est supprimée !!');
+            } else {
+                if ($sortieForm->get('enregistrer')->isClicked()){
+                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créér']));
+                } else {
+                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
+                }
+
+                $entityManager->persist($ville);
+                $entityManager->flush();
+
+                $entityManager->persist($lieu);
+                $entityManager->flush();
+
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+
+                if ($sortieForm->get('enregistrer')) {
+                    $this->addFlash('success','La modification est effectuée !!');
+                } elseif ($sortieForm->get('publier')) {
+                    $this->addFlash('success','La sortie est publiée !!');
+                }
+            }
+
+            return $this->redirectToRoute('sortie_home');
         }
 
-        // inscription de l'utilisateur s'il reste de la place
-        if (count($sortie->getParticipants()) < $sortie->getNbInscriptionsMax)
-        {
-            $sortie->addParticipant($this->getUser());
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($sortie);
-            $em->flush();
-        } else
-        {
-            $this->addFlash('danger', "Dommage il n'y a plus de places !");
-        }
-
-        return $this->redirectToRoute('sortie_home');
-    }
-
-
-    #[Route('/sortie/desinscrire/{id}',
-        name: 'desinscrire')]
-
-    public function desinscrire($id, SortieRepository $sortieRepository, EntityManagerInterface $em, EtatRepository $etatRepository)
-    {
-        $sortieRepository = $this->getDoctrine()->getRepository(Sortie::class);
-        $sortie = $sortieRepository->find($id);
-
-        if (!$sortie)
-        {
-            $this->addFlash('danger', "Cette sortie n'existe pas");
-        }
-
-        // supprimer l'utilisateur de la liste des participants
-        $sortie->removeParticipant($this->getUser());
-
-        $em = $this->getDoctrine()->getManager();
-        $em->flush();
-
-        $this->addFlash("success", "Vous êtes désinscrit !");
-        return $this->redirectToRoute('sortie_home');
+        return $this->render('sortie/update.html.twig',['sortieForm' => $sortieForm->createView(),
+                                                            'lieuForm'=>$lieuForm->createView(),
+                                                            'villeForm'=>$villeForm->createView()]);
     }
 }

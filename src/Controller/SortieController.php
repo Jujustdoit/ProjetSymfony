@@ -170,7 +170,7 @@ class SortieController extends AbstractController
     }
 
 
-    #[Route('/sortie/{id}/desinscrire',
+    #[Route('/sortie/desinscrire/{id}',
         name: 'desinscrire')]
 
     public function desinscrire($id, SortieRepository $sortieRepository, EntityManagerInterface $em, EtatRepository $etatRepository)

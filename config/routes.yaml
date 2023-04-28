@@ -1,3 +1,7 @@
+app_logout:
+    path: /logout
+    controller: App\Controller\SecurityController::logout
+
 controllers:
     resource: ../src/Controller/
     type: attribute

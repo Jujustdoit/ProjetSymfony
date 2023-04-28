@@ -18,7 +18,7 @@ class Campus
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
-    #[ORM\OneToMany(mappedBy: 'campus', targetEntity: sortie::class)]
+    #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Sortie::class)]
     private Collection $sortiesCampus;
 
     #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Participant::class)]

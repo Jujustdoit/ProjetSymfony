@@ -35,7 +35,7 @@ class AppFixtures extends Fixture
         }
 
         //fixtures des états (imcomplet juste pour tester)
-        $etatLibelle = [0, 1, 2];
+        $etatLibelle = ['Créée', 'Ouverte', 'Clôturée', 'En cours', 'Passée', 'Annulée'];
         $etats = [];
         foreach ($etatLibelle as $libelle) {
             $etat = new Etat();

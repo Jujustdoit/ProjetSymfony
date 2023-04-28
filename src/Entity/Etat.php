@@ -13,7 +13,6 @@ class Etat
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    # 0 Créée, 1 Ouverte, 2 Clôturée, 3 Activité en cours, 4 Activité passée, 5 Activité annulée
     private ?int $id = null;
 
     #[ORM\Column]

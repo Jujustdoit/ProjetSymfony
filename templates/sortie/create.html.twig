@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ parent() }} | Création Sortie{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/sortie.css') }}">
+
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+        <h3>Créer une sortie</h3>
+
+        {{ form_start(sortieForm) }}
+        {{ form_start(villeForm) }}
+        {{ form_start(lieuForm) }}
+
+        <div>
+            {{ form_label(sortieForm.nom) }}
+            {{ form_widget(sortieForm.nom) }}
+            {{ form_errors(sortieForm.nom) }}
+        </div>
+        <div>
+            {{ form_label(sortieForm.dateHeureDebut) }}
+            {{ form_widget(sortieForm.dateHeureDebut) }}
+            {{ form_errors(sortieForm.dateHeureDebut) }}
+        </div>
+        <div>
+            {{ form_label(sortieForm.dateLimiteInscription) }}
+            {{ form_widget(sortieForm.dateLimiteInscription) }}
+            {{ form_errors(sortieForm.dateLimiteInscription) }}
+        </div>
+        <div>
+            {{ form_label(sortieForm.nbInscriptionsMax) }}
+            {{ form_widget(sortieForm.nbInscriptionsMax) }}
+            {{ form_errors(sortieForm.nbInscriptionsMax) }}
+        </div>
+        <div>
+            {{ form_label(sortieForm.duree) }}
+            {{ form_widget(sortieForm.duree) }}
+            <span>minutes</span>
+            {{ form_errors(sortieForm.duree) }}
+        </div>
+        <div class="textArea">
+            {{ form_label(sortieForm.infosSortie) }}
+            {{ form_widget(sortieForm.infosSortie) }}
+            {{ form_errors(sortieForm.infosSortie) }}
+        </div>
+        <div>
+            {{ form_label(sortieForm.campus) }}
+            {{ form_widget(sortieForm.campus) }}
+            {{ form_errors(sortieForm.campus) }}
+        </div>
+
+        <h3>Créer un lieu de sortie</h3>
+
+        <div>
+            {{ form_label(villeForm.nom) }}
+            {{ form_widget(villeForm.nom) }}
+            {{ form_errors(villeForm.nom) }}
+        </div>
+
+        <div>
+            {{ form_label(lieuForm.nom) }}
+            {{ form_widget(lieuForm.nom) }}
+            {{ form_errors(lieuForm.nom) }}
+        </div>
+
+        <div>
+            {{ form_label(lieuForm.rue) }}
+            {{ form_widget(lieuForm.rue) }}
+            {{ form_errors(lieuForm.rue) }}
+        </div>
+
+        <div>
+            {{ form_label(villeForm.codePostal) }}
+            {{ form_widget(villeForm.codePostal) }}
+            {{ form_errors(villeForm.codePostal) }}
+        </div>
+
+        <div>
+            {{ form_label(lieuForm.latitude) }}
+            {{ form_widget(lieuForm.latitude) }}
+            {{ form_errors(lieuForm.latitude) }}
+        </div>
+
+        <div>
+            {{ form_label(lieuForm.longitude) }}
+            {{ form_widget(lieuForm.longitude) }}
+            {{ form_errors(lieuForm.longitude) }}
+        </div>
+
+        <div>
+            {{ form_label(sortieForm.enregistrer) }}
+            {{ form_widget(sortieForm.enregistrer) }}
+
+            {{ form_label(sortieForm.publier) }}
+            {{ form_widget(sortieForm.publier) }}
+
+        {{ form_end(villeForm) }}
+        {{ form_end(lieuForm) }}
+        {{ form_end(sortieForm) }}
+
+            <button type="button">
+                <a href="{{ path('sortie_home') }}">Annuler</a>
+            </button>
+        </div>
+
+    </div>
+
+
+{% endblock %}

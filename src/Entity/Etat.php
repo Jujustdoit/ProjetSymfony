@@ -13,11 +13,11 @@ class Etat
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    # 0 Créée, 1 Ouverte, 2 Clôturée, 3 Activité en cours, 4 Activité passée, 5 Activité annulée
     private ?int $id = null;
 
     #[ORM\Column]
-    # 0 Créée, 1 Ouverte, 2 Clôturée, 3 Activité en cours, 4 Activité passée, 5 Activité annulée
-    private ?int $libelle = null;
+    private ?string $libelle = null;
 
     #[ORM\OneToMany(mappedBy: 'etat', targetEntity: sortie::class)]
     private Collection $sorties;
@@ -32,12 +32,12 @@ class Etat
         return $this->id;
     }
 
-    public function getLibelle(): ?String
+    public function getLibelle(): ?string
     {
         return $this->libelle;
     }
 
-    public function setLibelle(String $libelle): self
+    public function setLibelle(string $libelle): self
     {
         $this->libelle = $libelle;
 
@@ -52,22 +52,22 @@ class Etat
         return $this->sorties;
     }
 
-    public function addSortie(sortie $sortie): self
+    public function addSorty(sortie $sorty): self
     {
-        if (!$this->sorties->contains($sortie)) {
-            $this->sorties->add($sortie);
-            $sortie->setEtat($this);
+        if (!$this->sorties->contains($sorty)) {
+            $this->sorties->add($sorty);
+            $sorty->setEtat($this);
         }
 
         return $this;
     }
 
-    public function removeSortie(sortie $sortie): self
+    public function removeSorty(sortie $sorty): self
     {
-        if ($this->sorties->removeElement($sortie)) {
+        if ($this->sorties->removeElement($sorty)) {
             // set the owning side to null (unless already changed)
-            if ($sortie->getEtat() === $this) {
-                $sortie->setEtat(null);
+            if ($sorty->getEtat() === $this) {
+                $sorty->setEtat(null);
             }
         }
 

@@ -136,4 +136,60 @@ class SortieController extends AbstractController
                                                             'villeForm'=>$villeForm->createView()]);
 
     }
+
+    #[Route('/sortie/inscrire/{id}',
+        name: 'inscrire')]
+
+    public function inscrire($id, SortieRepository $sortieRepository, EntityManagerInterface $em, EtatRepository $etatRepository)
+    {
+        //recherche de la sortie by $id
+        $sortieRepository = $this->getDoctrine()->getRepository(Sortie::class);
+        $sortie = $sortieRepository->find($id);
+
+        //TODO vérifier la condition état de la sortie
+        //on vérifie que la sortie soit ouverte
+        if ($sortie->getEtat()->getNom() !== "Ouvert")
+        {
+            $this->addFlash("danger", "Cette sortie n'est pas ouverte aux inscriptions !");
+            return $this->redirectToRoute('/sorties/details/{id}', ["id" => $sortie->getId()]);
+        }
+
+        // inscription de l'utilisateur s'il reste de la place
+        if (count($sortie->getParticipants()) < $sortie->getNbInscriptionsMax)
+        {
+            $sortie->addParticipant($this->getUser());
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($sortie);
+            $em->flush();
+        } else
+        {
+            $this->addFlash('danger', "Dommage il n'y a plus de places !");
+        }
+
+        return $this->redirectToRoute('home');
+    }
+
+
+    #[Route('/sortie/desinscrire/{id}',
+        name: 'desinscrire')]
+
+    public function desinscrire($id, SortieRepository $sortieRepository, EntityManagerInterface $em, EtatRepository $etatRepository)
+    {
+        $sortieRepository = $this->getDoctrine()->getRepository(Sortie::class);
+        $sortie = $sortieRepository->find($id);
+
+        if (!$sortie)
+        {
+            $this->addFlash('danger', "Cette sortie n'existe pas");
+        }
+
+        // supprimer l'utilisateur de la liste des participants
+        $sortie->removeParticipant($this->getUser());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->flush();
+
+        $this->addFlash("success", "Vous êtes désinscrit !");
+        return $this->redirectToRoute('home');
+    }
 }

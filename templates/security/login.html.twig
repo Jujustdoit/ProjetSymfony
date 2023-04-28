@@ -19,10 +19,10 @@
 
     <h1 class="h3 mb-3 font-weight-normal">Connectez-vous</h1>
         <form action="{{ path('app_login') }}" method="post">
-            <label for="username">Email:</label>
-            <input type="text" id="username" name="_username" value="{{ last_username }}">
+            <label for="email">Email:</label>
+            <input type="text" id="username" name="_username" value="{{ last_username }}" required autofocus>
 
-            <label for="password">Password:</label>
+            <label for="password">Mot de passe:</label>
             <input type="password" id="password" name="_password">
 
     {#

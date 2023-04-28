@@ -34,7 +34,7 @@ class SortieController extends AbstractController
     public function home(Request $request, ParticipantRepository $participantRepository, SortieRepository $sortieRepository): Response
     {
         //$user = $this->getUser();
-        $user = $participantRepository->findOneBy(['nom'=>'Spinoz']);
+        $user = $participantRepository->findOneBy(['nom'=>'Letellier']);
 
         $criteresForm = $this->createFormBuilder()
             ->add('campus', EntityType::class, [
@@ -86,7 +86,7 @@ class SortieController extends AbstractController
     public function create(Request $request, EtatRepository $etatRepository, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager): Response
     {
         //$organisateur = $this->getUser();
-        $organisateur = $participantRepository->findOneBy(['nom'=>'Spinoz']);
+        $organisateur = $participantRepository->findOneBy(['nom'=>'Letellier']);
 
         $sortie = new Sortie();
         $sortie->setOrganisateur($organisateur);

@@ -37,7 +37,7 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('stringRecherche',"%{$nomSortie}%");
         }
         if($dateMin && $dateMax){
-            $qb->andWhere($qb->expr()->between('s.dateDebut',':dateMin',':dateMax'))
+            $qb->andWhere($qb->expr()->between('s.dateHeureDebut',':dateMin',':dateMax'))
                 ->setParameter('dateMin',$dateMin)
                 ->setParameter('dateMax',$dateMax);
         }

@@ -14,6 +14,7 @@ use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -34,8 +35,8 @@ class SortieController extends AbstractController
     #[Route('/home', name: 'home')]
     public function home(Request $request, ParticipantRepository $participantRepository, SortieRepository $sortieRepository): Response
     {
-        //$user = $this->getUser();
-        $user = $participantRepository->findOneBy(['nom'=>'Letellier']);
+        $user = $this->getUser();
+        //$user = $participantRepository->findOneBy(['nom'=>'Letellier']);
 
         $criteresForm = $this->createFormBuilder()
             ->add('campus', EntityType::class, [
@@ -86,8 +87,8 @@ class SortieController extends AbstractController
     //#[isGranted(['ROLE_PARTICIPANT'])]
     public function create(Request $request, EtatRepository $etatRepository, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager): Response
     {
-        //$organisateur = $this->getUser();
-        $organisateur = $participantRepository->findOneBy(['nom'=>'Letellier']);
+        $organisateur = $this->getUser();
+        //$organisateur = $participantRepository->findOneBy(['nom'=>'Letellier']);
 
         $sortie = new Sortie();
         $sortie->setOrganisateur($organisateur);
@@ -196,5 +197,65 @@ class SortieController extends AbstractController
         return $this->render('sortie/update.html.twig',['sortieForm' => $sortieForm->createView(),
                                                             'lieuForm'=>$lieuForm->createView(),
                                                             'villeForm'=>$villeForm->createView()]);
+    }
+
+    #[Route('/inscription/{idSortie}/{idUser}', name: 'inscription')]
+    //*************Création des enregistrements de la sortie avec ID de la sortie et les ID Participants****************
+    public function register(
+        int                    $idSortie,
+        int                    $idUser,
+        ParticipantRepository  $participantRepository,
+        SortieRepository       $sortieRepository,
+        EntityManagerInterface $entityManager,
+        Request                $request
+    )
+    {
+        //Recherche de la sortie via son ID
+        $sortie = $sortieRepository->find($idSortie);
+        //Recherche du participant via son ID
+        $participant = $participantRepository->find($idUser);
+
+        if ($sortie->getNbInscriptionsMax() > count($sortie->getParticipants()) && $sortie->getDateLimiteInscription() > new DateTime('NOW')) {
+            $sortie->addParticipant($participant);
+            //Enregistrement du participant sur la sortie
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Inscription réussie !');
+            return $this->redirectToRoute('sortie_home');
+        } else {
+            $this->addFlash('fail', 'L\'inscription a échoué car le nombre de place est déjà rempli ou la date de clôture est dépassée !');
+            return $this->redirectToRoute('sortie_home');
+        }
+    }
+
+    #[Route('/desinscription/{idSortie}/{idUser}', name: 'desinscription')]
+    //*********************Désinscription d'une sortie avec ID sortie et ID participant ********************************
+    public function unsubscribe(
+        int                    $idSortie,
+        int                    $idUser,
+        ParticipantRepository  $participantRepository,
+        SortieRepository       $sortiesRepository,
+        EntityManagerInterface $entityManager,
+        Request                $request
+    )
+    {
+        //Recherche de la sortie via son ID
+        $sortie = $sortiesRepository->find($idSortie);
+        //Recherche du participant via son ID
+        $participant = $participantRepository->find($idUser);
+
+        if ($sortie->getDateLimiteInscription() > new DateTime('NOW')) {
+            $sortie->removeParticipant($participant);
+            //Suppression du participant sur la sortie
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Désinscription réussie !');
+            return $this->redirectToRoute('main_home');
+        } else {
+            $this->addFlash('fail', 'Vous ne pouvez vous désincrire après la fin des inscriptions !');
+            return $this->redirectToRoute('main_home');
+        }
     }
 }

@@ -92,9 +92,9 @@
                             <a href="">Afficher</a>
                         {% endif %}
                         {% if app.user in sortie.participants %}
-                            - <a href="">Se désister</a>
+                            - <a href="{{ path('sortie_desinscription', {'idSortie':sortie.id, 'idUser':app.user.id}) }}">Se désister</a>
                         {% else %}
-                            - <a href="">S'inscrire</a>
+                            - <a href="{{ path('sortie_inscription', {'idSortie':sortie.id, 'idUser':app.user.id}) }}">S'inscrire</a>
                         {% endif %}
                         {% if app.user == sortie.organisateur %}
                             {% if sortie.etat == 'Créée' %}

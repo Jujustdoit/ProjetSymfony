@@ -31,7 +31,7 @@ class Lieu
     #[ORM\JoinColumn(nullable: false)]
     private ?Ville $ville = null;
 
-    #[ORM\OneToMany(mappedBy: 'lieu', targetEntity: sortie::class)]
+    #[ORM\OneToMany(mappedBy: 'lieu', targetEntity: Sortie::class)]
     private Collection $Sorties;
 
     public function __construct()
@@ -112,22 +112,22 @@ class Lieu
         return $this->Sorties;
     }
 
-    public function addSorty(sortie $sorty): self
+    public function addSortie(sortie $sortie): self
     {
-        if (!$this->Sorties->contains($sorty)) {
-            $this->Sorties->add($sorty);
-            $sorty->setLieu($this);
+        if (!$this->Sorties->contains($sortie)) {
+            $this->Sorties->add($sortie);
+            $sortie->setLieu($this);
         }
 
         return $this;
     }
 
-    public function removeSorty(sortie $sorty): self
+    public function removeSortie(sortie $sortie): self
     {
-        if ($this->Sorties->removeElement($sorty)) {
+        if ($this->Sorties->removeElement($sortie)) {
             // set the owning side to null (unless already changed)
-            if ($sorty->getLieu() === $this) {
-                $sorty->setLieu(null);
+            if ($sortie->getLieu() === $this) {
+                $sortie->setLieu(null);
             }
         }
 

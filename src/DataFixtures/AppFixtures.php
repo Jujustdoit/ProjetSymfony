@@ -52,10 +52,10 @@ class AppFixtures extends Fixture
         $participants = array();
         for ($i = 0; $i < 10; $i++) {
             $participants[$i] = new Participant();
-            $participants[$i]->setEmail($faker->safeEmail);
+            $participants[$i]->setEmail("participant$i@participant.com");
             $participants[$i]->setNom($faker->lastName);
             $participants[$i]->setPrenom($faker->firstName);
-            $participants[$i]->setPseudo($faker->name);
+            $participants[$i]->setPseudo($faker->userName);
             $participants[$i]->setAdministrateur(true);
             $participants[$i]->setActif(true);
             $participants[$i]->setTelephone($faker->phoneNumber);

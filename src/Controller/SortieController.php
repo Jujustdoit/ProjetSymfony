@@ -138,7 +138,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/update/{id}', name: 'update')]
-    //#[isGranted(['ROLE_PARTICIPANT'])]
+    //#[isGranted(['ROLE_ORGANISATEUR'])]
     public function update($id,Request $request, SortieRepository $sortieRepository, LieuRepository $lieuRepository, VilleRepository $villeRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
 

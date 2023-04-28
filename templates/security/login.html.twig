@@ -13,7 +13,7 @@
 
                 {% if app.user %}
                     <div class="mb-3">
-                        Vous êtes connecté(e) comme {{ app.user.name }}, <a href="{{ path('app_logout') }}">Me déconnecter</a>
+                        Vous êtes connecté(e) comme {{ app.user.nom }}, <a href="{{ path('app_logout') }}">Me déconnecter</a>
                     </div>
                 {% endif %}
 
@@ -30,11 +30,10 @@
     <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
     <label for="inputPassword">Password</label>
     <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
     #}
+    <input type="hidden" name="_csrf_token"
+           value="{{ csrf_token('authenticate') }}">
+
 
     {#
         Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.

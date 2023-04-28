@@ -34,8 +34,8 @@ class SortieController extends AbstractController
     #[Route('/home', name: 'home')]
     public function home(Request $request, ParticipantRepository $participantRepository, SortieRepository $sortieRepository): Response
     {
-        //$user = $this->getUser();
-        $user = $participantRepository->findOneBy(['nom'=>'Letellier']);
+        $user = $this->getUser();
+        //$user = $participantRepository->findOneBy(['nom'=>'Letellier']);
 
         $criteresForm = $this->createFormBuilder()
             ->add('campus', EntityType::class, [
@@ -86,8 +86,8 @@ class SortieController extends AbstractController
     //#[isGranted(['ROLE_PARTICIPANT'])]
     public function create(Request $request, EtatRepository $etatRepository, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager): Response
     {
-        //$organisateur = $this->getUser();
-        $organisateur = $participantRepository->findOneBy(['nom'=>'Letellier']);
+        $organisateur = $this->getUser();
+        //$organisateur = $participantRepository->findOneBy(['nom'=>'Letellier']);
 
         $sortie = new Sortie();
         $sortie->setOrganisateur($organisateur);

@@ -143,7 +143,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/update/{id}', name: 'update')]
-    #[Security('is_granted(\'ROLE_PARTICIPANT\')')]
+    #[Security('is_granted(\'ROLE_ORGANISATEUR\')')]
     public function update($id,Request $request, SortieRepository $sortieRepository, LieuRepository $lieuRepository, VilleRepository $villeRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
 

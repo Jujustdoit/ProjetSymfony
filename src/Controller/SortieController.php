@@ -16,6 +16,7 @@ use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -83,7 +84,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    //#[isGranted(['ROLE_PARTICIPANT'])]
+    #[Security('is_granted(\'ROLE_PARTICIPANT\')')]
     public function create(Request $request, EtatRepository $etatRepository, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager): Response
     {
         $organisateur = $this->getUser();
@@ -91,8 +92,8 @@ class SortieController extends AbstractController
 
         $sortie = new Sortie();
         $sortie->setOrganisateur($organisateur);
-        $sortieForm = $this->createForm(SortieType::class, $sortie);
-        $sortieForm->handleRequest($request);
+        $sortieCreateForm = $this->createForm(SortieType::class, $sortie);
+        $sortieCreateForm->handleRequest($request);
 
         $lieu = new Lieu();
         $lieuForm = $this->createForm(LieuType::class, $lieu);
@@ -102,12 +103,16 @@ class SortieController extends AbstractController
         $villeForm = $this->createForm(VilleType::class, $ville);
         $villeForm->handleRequest($request);
 
-        if ($sortieForm->isSubmitted() && $sortieForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
-            if ($organisateur->getRoles() == ["ROLE_PARTICIPANT"]) $organisateur->setRoles(["ROLE_ORGANISATEUR"]);
+        if ($sortieCreateForm->isSubmitted() && $sortieCreateForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
+            if (in_array("ROLE_PARTICIPANT", $organisateur->getRoles())) {
+                $organisateur->setRoles(["ROLE_ORGANISATEUR"]);
+                $entityManager->persist($organisateur);
+                $entityManager->flush();
+            }
 
-            if ($sortieForm->get('enregistrer')) {
+            if ($sortieCreateForm->get('enregistrer')) {
                 $sortie->setEtat($etatRepository->findOneBy(['libelle'=>'Créée']));
-            } elseif ($sortieForm->get('publier')) {
+            } elseif ($sortieCreateForm->get('publier')) {
                 $sortie->setEtat($etatRepository->findOneBy(['libelle'=>'Ouverte']));
             }
 
@@ -124,21 +129,21 @@ class SortieController extends AbstractController
             $entityManager->persist($sortie);
             $entityManager->flush();
 
-            if ($sortieForm->get('enregistrer')) {
+            if ($sortieCreateForm->get('enregistrer')) {
                 $this->addFlash('success','La sortie est créée !!');
-            } elseif ($sortieForm->get('publier')) {
+            } elseif ($sortieCreateForm->get('publier')) {
                 $this->addFlash('success','La sortie est publiée !!');
             }
             return $this->redirectToRoute('sortie_home');
         }
-        return $this->render('sortie/create.html.twig',['sortieForm' => $sortieForm->createView(),
+        return $this->render('sortie/create.html.twig',['sortieForm' => $sortieCreateForm->createView(),
                                                             'lieuForm'=>$lieuForm->createView(),
                                                             'villeForm'=>$villeForm->createView()]);
 
     }
 
     #[Route('/update/{id}', name: 'update')]
-    //#[isGranted(['ROLE_ORGANISATEUR'])]
+    #[Security('is_granted(\'ROLE_PARTICIPANT\')')]
     public function update($id,Request $request, SortieRepository $sortieRepository, LieuRepository $lieuRepository, VilleRepository $villeRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
 
@@ -146,9 +151,9 @@ class SortieController extends AbstractController
         if (!$sortie) {
             throw $this->createNotFoundException("Sortie inexistante");
         }
-        $sortieForm = $this->createForm(SortieType::class, $sortie);
+        $sortieUpdateForm = $this->createForm(SortieType::class, $sortie);
 
-        $sortieForm->handleRequest($request);
+        $sortieUpdateForm->handleRequest($request);
 
         $lieu = $lieuRepository->find($sortie->getLieu()->getId());
         $lieuForm = $this->createForm(LieuType::class, $lieu);
@@ -158,17 +163,17 @@ class SortieController extends AbstractController
         $villeForm = $this->createForm(VilleType::class, $ville);
         $villeForm->handleRequest($request);
 
-        if ($sortieForm->isSubmitted() && $sortieForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
+        if ($sortieUpdateForm->isSubmitted() && $sortieUpdateForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
 
             $lieu->setVille($ville);
             $sortie->setLieu($lieu);
 
-            if ($sortieForm->get('supprimer')->isClicked()) {
+            if ($sortieUpdateForm->get('supprimer')->isClicked()) {
                 $entityManager->remove($sortie);
                 $entityManager->flush();
                 $this->addFlash('success','La sortie est supprimée !!');
             } else {
-                if ($sortieForm->get('enregistrer')->isClicked()){
+                if ($sortieUpdateForm->get('enregistrer')->isClicked()){
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créér']));
                 } else {
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
@@ -183,9 +188,9 @@ class SortieController extends AbstractController
                 $entityManager->persist($sortie);
                 $entityManager->flush();
 
-                if ($sortieForm->get('enregistrer')) {
+                if ($sortieUpdateForm->get('enregistrer')) {
                     $this->addFlash('success','La modification est effectuée !!');
-                } elseif ($sortieForm->get('publier')) {
+                } elseif ($sortieUpdateForm->get('publier')) {
                     $this->addFlash('success','La sortie est publiée !!');
                 }
             }
@@ -193,7 +198,7 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_home');
         }
 
-        return $this->render('sortie/update.html.twig',['sortieForm' => $sortieForm->createView(),
+        return $this->render('sortie/update.html.twig',['sortieForm' => $sortieUpdateForm->createView(),
                                                             'lieuForm'=>$lieuForm->createView(),
                                                             'villeForm'=>$villeForm->createView()]);
     }

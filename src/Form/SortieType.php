@@ -14,9 +14,14 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SortieType extends AbstractType
 {
+    private $authorizationChecker;
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker) {
+        $this->authorizationChecker = $authorizationChecker;
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
@@ -64,8 +69,11 @@ class SortieType extends AbstractType
 
 
             ->add('enregistrer', SubmitType::class, ['label'=> 'Enregistrer'])
-            ->add('publier', SubmitType::class, ['label'=> 'Publier la sortie'])
-            ->add('supprimer', SubmitType::class, ['label'=> 'Supprimer la sortie'])
+            ->add('publier', SubmitType::class, ['label'=> 'Publier la sortie']);
+
+            if ($this->authorizationChecker->isGranted('ROLE_ORGANISATEUR')) {
+                $builder->add('supprimer', SubmitType::class, ['label'=> 'Supprimer la sortie']);
+            }
 
         ;
     }

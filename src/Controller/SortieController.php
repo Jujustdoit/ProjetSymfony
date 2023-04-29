@@ -110,9 +110,9 @@ class SortieController extends AbstractController
                 $entityManager->flush();
             }
 
-            if ($sortieCreateForm->get('enregistrer')) {
+            if ($request->request->has('enregistrer')) {
                 $sortie->setEtat($etatRepository->findOneBy(['libelle'=>'Créée']));
-            } elseif ($sortieCreateForm->get('publier')) {
+            } elseif ($request->request->has('publier')) {
                 $sortie->setEtat($etatRepository->findOneBy(['libelle'=>'Ouverte']));
             }
 
@@ -129,9 +129,9 @@ class SortieController extends AbstractController
             $entityManager->persist($sortie);
             $entityManager->flush();
 
-            if ($sortieCreateForm->get('enregistrer')) {
+            if ($request->request->has('enregistrer')) {
                 $this->addFlash('success','La sortie est créée !!');
-            } elseif ($sortieCreateForm->get('publier')) {
+            } elseif ($request->request->has('publier')) {
                 $this->addFlash('success','La sortie est publiée !!');
             }
             return $this->redirectToRoute('sortie_home');
@@ -168,14 +168,14 @@ class SortieController extends AbstractController
             $lieu->setVille($ville);
             $sortie->setLieu($lieu);
 
-            if ($sortieUpdateForm->get('supprimer')->isClicked()) {
+            if ($request->request->has('supprimer')) {
                 $entityManager->remove($sortie);
                 $entityManager->flush();
                 $this->addFlash('success','La sortie est supprimée !!');
             } else {
-                if ($sortieUpdateForm->get('enregistrer')->isClicked()){
+                if ($request->request->has('enregistrer')){
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créér']));
-                } else {
+                } elseif ($request->request->has('publier')) {
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
                 }
 
@@ -188,9 +188,9 @@ class SortieController extends AbstractController
                 $entityManager->persist($sortie);
                 $entityManager->flush();
 
-                if ($sortieUpdateForm->get('enregistrer')) {
+                if ($request->request->has('enregistrer')) {
                     $this->addFlash('success','La modification est effectuée !!');
-                } elseif ($sortieUpdateForm->get('publier')) {
+                } elseif ($request->request->has('publier')) {
                     $this->addFlash('success','La sortie est publiée !!');
                 }
             }

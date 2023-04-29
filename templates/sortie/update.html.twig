@@ -88,6 +88,12 @@
         </div>
 
         <div>
+
+            <button type="submit" name="enregistrer">Enregistrer</button>
+            <button type="submit" name="publier">Publier la sortie</button>
+            <button type="submit" name="supprimer">Supprimer la sortie</button>
+
+            {#
             {{ form_label(sortieForm.enregistrer) }}
             {{ form_widget(sortieForm.enregistrer) }}
 
@@ -95,7 +101,7 @@
             {{ form_widget(sortieForm.publier)}}
 
             {{ form_label(sortieForm.supprimer) }}
-            {{ form_widget(sortieForm.supprimer) }}
+            {{ form_widget(sortieForm.supprimer) }}#}
 
             {{ form_end(villeForm) }}
             {{ form_end(lieuForm) }}

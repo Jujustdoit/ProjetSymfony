@@ -88,7 +88,7 @@
                     </td>
                     <td>
                         {% if (sortie.etat.libelle == 'Ouverte') or (sortie.etat.libelle == 'Clôturée') %}
-                            <a href="">Afficher</a>
+                            <a href="{{ path('sortie_show', {'id': sortie.id }) }}">Afficher</a>
                         {% endif %}
                         {% if app.user in sortie.participants %}
                             - <a href="">Se désister</a>

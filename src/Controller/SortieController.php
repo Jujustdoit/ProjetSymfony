@@ -15,7 +15,6 @@ use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +25,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/sortie', name: 'sortie_')]
 
@@ -169,6 +167,9 @@ class SortieController extends AbstractController
             $sortie->setLieu($lieu);
 
             if ($request->request->has('supprimer')) {
+                if (count($sortie->getOrganisateur()->getSorties()) == 1) {
+                    $sortie->getOrganisateur()->setRoles(["ROLE_PARTICIPANT"]);
+                }
                 $entityManager->remove($sortie);
                 $entityManager->flush();
                 $this->addFlash('success','La sortie est supprimée !!');
@@ -201,5 +202,16 @@ class SortieController extends AbstractController
         return $this->render('sortie/update.html.twig',['sortieForm' => $sortieUpdateForm->createView(),
                                                             'lieuForm'=>$lieuForm->createView(),
                                                             'villeForm'=>$villeForm->createView()]);
+    }
+
+    #[Route('/show/{id}', name: 'show')]
+    #[Security('is_granted(\'ROLE_PARTICIPANT\')')]
+    public function show($id, ParticipantRepository $participantRepository, SortieRepository $sortieRepository): Response
+    {
+        $sortie = $sortieRepository->find($id);
+
+        $participants = $sortie->getParticipants();
+
+        return $this->render('sortie/show.html.twig', ['sortie' => $sortie, 'participants' => $participants]);
     }
 }

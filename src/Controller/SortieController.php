@@ -252,10 +252,10 @@ class SortieController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Désinscription réussie !');
-            return $this->redirectToRoute('main_home');
+            return $this->redirectToRoute('sortie_home');
         } else {
             $this->addFlash('fail', 'Vous ne pouvez vous désincrire après la fin des inscriptions !');
-            return $this->redirectToRoute('main_home');
+            return $this->redirectToRoute('sortie_home');
         }
     }
 }

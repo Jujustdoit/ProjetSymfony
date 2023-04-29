@@ -59,7 +59,7 @@ class AppFixtures extends Fixture
             $participants[$i]->setAdministrateur(true);
             $participants[$i]->setActif(true);
             $participants[$i]->setTelephone($faker->phoneNumber);
-
+            $participants[$i]->setRoles(['ROLE_ORGANISATEUR']);
 
             $password = $this->hasher->hashPassword($participants[$i], 'pass_1201');
             $participants[$i]->setPassword($password);
@@ -115,7 +115,7 @@ class AppFixtures extends Fixture
 
 //            $dateString = date_format($date1, 'd-m-Y');
 //            $date2 = $faker->dateTimeBetween($dateString, '+7 days');
-            if ($date1 > $date2)
+            if ($date1 < $date2)
             {
                 $sortie->setDateHeureDebut($date1);
                 $sortie->setDateLimiteInscription($date2);

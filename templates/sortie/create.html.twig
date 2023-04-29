@@ -93,11 +93,16 @@
         </div>
 
         <div>
+
+            <button type="submit" name="enregistrer">Enregistrer</button>
+            <button type="submit" name="publier">Publier la sortie</button>
+
+            {#
             {{ form_label(sortieForm.enregistrer) }}
             {{ form_widget(sortieForm.enregistrer) }}
 
             {{ form_label(sortieForm.publier) }}
-            {{ form_widget(sortieForm.publier) }}
+            {{ form_widget(sortieForm.publier) }}#}
 
         {{ form_end(villeForm) }}
         {{ form_end(lieuForm) }}

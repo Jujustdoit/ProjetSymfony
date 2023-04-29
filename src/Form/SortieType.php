@@ -3,14 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Campus;
-use App\Entity\Lieu;
 use App\Entity\Sortie;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -63,9 +60,12 @@ class SortieType extends AbstractType
             ])*/
 
 
-            ->add('enregistrer', SubmitType::class, ['label'=> 'Enregistrer'])
-            ->add('publier', SubmitType::class, ['label'=> 'Publier la sortie'])
-            ->add('supprimer', SubmitType::class, ['label'=> 'Supprimer la sortie'])
+            /*->add('enregistrer', SubmitType::class, ['label'=> 'Enregistrer'])
+            ->add('publier', SubmitType::class, ['label'=> 'Publier la sortie']);*/
+
+            /*if ($this->authorizationChecker->isGranted('ROLE_ORGANISATEUR')) {
+                $builder->add('supprimer', SubmitType::class, ['label'=> 'Supprimer la sortie']);
+            }*/
 
         ;
     }

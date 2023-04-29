@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/sortie.css') }}">
+{% endblock %}
+
 {% block body %}
 
     <div class="container">
@@ -16,19 +20,21 @@
         <p>
             Lieu : {{ sortie.lieu.nom ~ " " ~ sortie.lieu.ville.codePostal ~ " " ~ sortie.lieu.ville.nom }}
         </p>
-    </div>
-    <div>
-        {{ form_start(annulationForm) }}
-        {{ form_widget(annulationForm) }}
-        <div>
-            <button type="submit" name="annulerSortie">Enregistrer</button>
-        {{ form_end(annulationForm) }}
-
-            <button type="button">
-                <a href="{{ path('sortie_home') }}">Annuler</a>
-            </button>
+        <div class="textArea">
+            {{ form_start(annulationForm) }}
+            {{ form_widget(annulationForm) }}
         </div>
+
+        <div>
+                <button type="submit" name="annulerSortie">Enregistrer</button>
+            {{ form_end(annulationForm) }}
+
+                <button type="button">
+                    <a href="{{ path('sortie_home') }}">Annuler</a>
+                </button>
+            </div>
     </div>
+
 
 {% endblock %}
 

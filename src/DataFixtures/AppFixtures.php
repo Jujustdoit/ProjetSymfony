@@ -59,7 +59,7 @@ class AppFixtures extends Fixture
             $participants[$i]->setAdministrateur(true);
             $participants[$i]->setActif(true);
             $participants[$i]->setTelephone($faker->phoneNumber);
-
+            $participants[$i]->setRoles(['ROLE_PARTICIPANT']);
 
             $password = $this->hasher->hashPassword($participants[$i], 'pass_1201');
             $participants[$i]->setPassword($password);

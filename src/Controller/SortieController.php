@@ -21,10 +21,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[Route('/sortie', name: 'sortie_')]
 
@@ -206,12 +208,47 @@ class SortieController extends AbstractController
 
     #[Route('/show/{id}', name: 'show')]
     #[Security('is_granted(\'ROLE_PARTICIPANT\')')]
-    public function show($id, ParticipantRepository $participantRepository, SortieRepository $sortieRepository): Response
+    public function show($id, SortieRepository $sortieRepository): Response
     {
         $sortie = $sortieRepository->find($id);
 
         $participants = $sortie->getParticipants();
 
         return $this->render('sortie/show.html.twig', ['sortie' => $sortie, 'participants' => $participants]);
+    }
+
+    #[Route('/annulation/{id}', name: 'annulation')]
+    #[Security('is_granted(\'ROLE_ORGANISATEUR\')')]
+    public function annulation($id, Request $request, EtatRepository $etatRepository, SortieRepository $sortieRepository, EntityManagerInterface $entityManager): Response
+    {
+        $sortie = $sortieRepository->find($id);
+
+        $annulationForm = $this->createFormBuilder()
+        ->add('Motif', TextareaType::class,
+        ['label'=>'Motif : ',
+            'attr'=>['rows'=>5],
+            'constraints'=>[
+                new NotBlank([
+                    'message'=>'Le motif de l\'annulation est obligatoire'
+                ])
+            ]
+        ])
+        ->getForm();
+
+        $annulationForm->handleRequest($request);
+
+        if ($annulationForm->isSubmitted() && $annulationForm->isValid()) {
+            $motif = $annulationForm->getData();
+            $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Annulée']));
+            $sortie->setInfosSortie($motif['Motif']);
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            $this->addFlash('success','L\'annulation est effectuée !!');
+
+            return $this->redirectToRoute('sortie_home');
+        }
+
+        return $this->render('sortie/annulation.html.twig', ['annulationForm'=>$annulationForm->createView(), 'sortie' => $sortie]);
     }
 }

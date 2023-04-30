@@ -14,19 +14,19 @@ use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/sortie', name: 'sortie_')]
 
@@ -84,7 +84,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    #[Security('is_granted(\'ROLE_PARTICIPANT\')')]
+    //#[isGranted(['ROLE_PARTICIPANT'])]
     public function create(Request $request, EtatRepository $etatRepository, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager): Response
     {
         $organisateur = $this->getUser();
@@ -92,8 +92,8 @@ class SortieController extends AbstractController
 
         $sortie = new Sortie();
         $sortie->setOrganisateur($organisateur);
-        $sortieCreateForm = $this->createForm(SortieType::class, $sortie);
-        $sortieCreateForm->handleRequest($request);
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
+        $sortieForm->handleRequest($request);
 
         $lieu = new Lieu();
         $lieuForm = $this->createForm(LieuType::class, $lieu);
@@ -103,16 +103,12 @@ class SortieController extends AbstractController
         $villeForm = $this->createForm(VilleType::class, $ville);
         $villeForm->handleRequest($request);
 
-        if ($sortieCreateForm->isSubmitted() && $sortieCreateForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
-            if (in_array("ROLE_PARTICIPANT", $organisateur->getRoles())) {
-                $organisateur->setRoles(["ROLE_ORGANISATEUR"]);
-                $entityManager->persist($organisateur);
-                $entityManager->flush();
-            }
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
+            if ($organisateur->getRoles() == ["ROLE_PARTICIPANT"]) $organisateur->setRoles(["ROLE_ORGANISATEUR"]);
 
-            if ($request->request->has('enregistrer')) {
+            if ($sortieForm->get('enregistrer')) {
                 $sortie->setEtat($etatRepository->findOneBy(['libelle'=>'Créée']));
-            } elseif ($request->request->has('publier')) {
+            } elseif ($sortieForm->get('publier')) {
                 $sortie->setEtat($etatRepository->findOneBy(['libelle'=>'Ouverte']));
             }
 
@@ -129,21 +125,21 @@ class SortieController extends AbstractController
             $entityManager->persist($sortie);
             $entityManager->flush();
 
-            if ($request->request->has('enregistrer')) {
+            if ($sortieForm->get('enregistrer')) {
                 $this->addFlash('success','La sortie est créée !!');
-            } elseif ($request->request->has('publier')) {
+            } elseif ($sortieForm->get('publier')) {
                 $this->addFlash('success','La sortie est publiée !!');
             }
             return $this->redirectToRoute('sortie_home');
         }
-        return $this->render('sortie/create.html.twig',['sortieForm' => $sortieCreateForm->createView(),
+        return $this->render('sortie/create.html.twig',['sortieForm' => $sortieForm->createView(),
                                                             'lieuForm'=>$lieuForm->createView(),
                                                             'villeForm'=>$villeForm->createView()]);
 
     }
 
     #[Route('/update/{id}', name: 'update')]
-    #[Security('is_granted(\'ROLE_ORGANISATEUR\')')]
+    //#[isGranted(['ROLE_ORGANISATEUR'])]
     public function update($id,Request $request, SortieRepository $sortieRepository, LieuRepository $lieuRepository, VilleRepository $villeRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
 
@@ -151,9 +147,9 @@ class SortieController extends AbstractController
         if (!$sortie) {
             throw $this->createNotFoundException("Sortie inexistante");
         }
-        $sortieUpdateForm = $this->createForm(SortieType::class, $sortie);
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
 
-        $sortieUpdateForm->handleRequest($request);
+        $sortieForm->handleRequest($request);
 
         $lieu = $lieuRepository->find($sortie->getLieu()->getId());
         $lieuForm = $this->createForm(LieuType::class, $lieu);
@@ -163,22 +159,19 @@ class SortieController extends AbstractController
         $villeForm = $this->createForm(VilleType::class, $ville);
         $villeForm->handleRequest($request);
 
-        if ($sortieUpdateForm->isSubmitted() && $sortieUpdateForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
 
             $lieu->setVille($ville);
             $sortie->setLieu($lieu);
 
-            if ($request->request->has('supprimer')) {
-                if (count($sortie->getOrganisateur()->getSorties()) == 1) {
-                    $sortie->getOrganisateur()->setRoles(["ROLE_PARTICIPANT"]);
-                }
+            if ($sortieForm->get('supprimer')->isClicked()) {
                 $entityManager->remove($sortie);
                 $entityManager->flush();
                 $this->addFlash('success','La sortie est supprimée !!');
             } else {
-                if ($request->request->has('enregistrer')){
+                if ($sortieForm->get('enregistrer')->isClicked()){
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créér']));
-                } elseif ($request->request->has('publier')) {
+                } else {
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
                 }
 
@@ -191,9 +184,9 @@ class SortieController extends AbstractController
                 $entityManager->persist($sortie);
                 $entityManager->flush();
 
-                if ($request->request->has('enregistrer')) {
+                if ($sortieForm->get('enregistrer')) {
                     $this->addFlash('success','La modification est effectuée !!');
-                } elseif ($request->request->has('publier')) {
+                } elseif ($sortieForm->get('publier')) {
                     $this->addFlash('success','La sortie est publiée !!');
                 }
             }
@@ -201,54 +194,68 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_home');
         }
 
-        return $this->render('sortie/update.html.twig',['sortieForm' => $sortieUpdateForm->createView(),
+        return $this->render('sortie/update.html.twig',['sortieForm' => $sortieForm->createView(),
                                                             'lieuForm'=>$lieuForm->createView(),
                                                             'villeForm'=>$villeForm->createView()]);
     }
 
-    #[Route('/show/{id}', name: 'show')]
-    #[Security('is_granted(\'ROLE_PARTICIPANT\')')]
-    public function show($id, SortieRepository $sortieRepository): Response
+    #[Route('/inscription/{idSortie}/{idUser}', name: 'inscription')]
+    //*************Création des enregistrements de la sortie avec ID de la sortie et les ID Participants****************
+    public function register(
+        int                    $idSortie,
+        int                    $idUser,
+        ParticipantRepository  $participantRepository,
+        SortieRepository       $sortieRepository,
+        EntityManagerInterface $entityManager,
+        Request                $request
+    )
     {
-        $sortie = $sortieRepository->find($id);
+        //Recherche de la sortie via son ID
+        $sortie = $sortieRepository->find($idSortie);
+        //Recherche du participant via son ID
+        $participant = $participantRepository->find($idUser);
 
-        $participants = $sortie->getParticipants();
-
-        return $this->render('sortie/show.html.twig', ['sortie' => $sortie, 'participants' => $participants]);
-    }
-
-    #[Route('/annulation/{id}', name: 'annulation')]
-    #[Security('is_granted(\'ROLE_ORGANISATEUR\')')]
-    public function annulation($id, Request $request, EtatRepository $etatRepository, SortieRepository $sortieRepository, EntityManagerInterface $entityManager): Response
-    {
-        $sortie = $sortieRepository->find($id);
-
-        $annulationForm = $this->createFormBuilder()
-        ->add('Motif', TextareaType::class,
-        ['label'=>'Motif : ',
-            'attr'=>['rows'=>5],
-            'constraints'=>[
-                new NotBlank([
-                    'message'=>'Le motif de l\'annulation est obligatoire'
-                ])
-            ]
-        ])
-        ->getForm();
-
-        $annulationForm->handleRequest($request);
-
-        if ($annulationForm->isSubmitted() && $annulationForm->isValid()) {
-            $motif = $annulationForm->getData();
-            $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Annulée']));
-            $sortie->setInfosSortie($motif['Motif']);
+        if ($sortie->getNbInscriptionsMax() > count($sortie->getParticipants()) && $sortie->getDateLimiteInscription() > new DateTime('NOW')) {
+            $sortie->addParticipant($participant);
+            //Enregistrement du participant sur la sortie
             $entityManager->persist($sortie);
             $entityManager->flush();
 
-            $this->addFlash('success','L\'annulation est effectuée !!');
-
+            $this->addFlash('success', 'Inscription réussie !');
+            return $this->redirectToRoute('sortie_home');
+        } else {
+            $this->addFlash('fail', 'L\'inscription a échoué car le nombre de place est déjà rempli ou la date de clôture est dépassée !');
             return $this->redirectToRoute('sortie_home');
         }
+    }
 
-        return $this->render('sortie/annulation.html.twig', ['annulationForm'=>$annulationForm->createView(), 'sortie' => $sortie]);
+    #[Route('/desinscription/{idSortie}/{idUser}', name: 'desinscription')]
+    //*********************Désinscription d'une sortie avec ID sortie et ID participant ********************************
+    public function unsubscribe(
+        int                    $idSortie,
+        int                    $idUser,
+        ParticipantRepository  $participantRepository,
+        SortieRepository       $sortiesRepository,
+        EntityManagerInterface $entityManager,
+        Request                $request
+    )
+    {
+        //Recherche de la sortie via son ID
+        $sortie = $sortiesRepository->find($idSortie);
+        //Recherche du participant via son ID
+        $participant = $participantRepository->find($idUser);
+
+        if ($sortie->getDateLimiteInscription() > new DateTime('NOW')) {
+            $sortie->removeParticipant($participant);
+            //Suppression du participant sur la sortie
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Désinscription réussie !');
+            return $this->redirectToRoute('sortie_home');
+        } else {
+            $this->addFlash('fail', 'Vous ne pouvez vous désincrire après la fin des inscriptions !');
+            return $this->redirectToRoute('sortie_home');
+        }
     }
 }

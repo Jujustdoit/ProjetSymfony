@@ -5,3 +5,7 @@ app_logout:
 controllers:
     resource: ../src/Controller/
     type: attribute
+
+index:
+    path: /
+    controller: App\Controller\SortieController::home

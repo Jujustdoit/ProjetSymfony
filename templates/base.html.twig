@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Sortir.com{% endblock %}</title>
@@ -32,6 +32,15 @@
             {% endfor %}
         {% endfor %}
     <body>
-        {% block body %}{% endblock %}
+
+{#    affichage du statut connecté et lien de déconnexion#}
+    {% if app.user %}
+        <div class="mb-3">
+            Vous êtes connecté(e) comme {{ app.user.nom }}, <a href="{{ path('app_logout') }}">Me déconnecter</a>
+        </div>
+    {% endif %}
+
+        {% block body %}
+        {% endblock %}
     </body>
 </html>

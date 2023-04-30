@@ -1,4 +1,3 @@
-{% extends 'base.html.twig' %}
 {% block content %}
 <head>
     <title>Sortir.com | Connexion</title>
@@ -22,11 +21,14 @@
 
     <h1 class="h3 mb-3 font-weight-normal">Connectez-vous</h1>
         <form action="{{ path('app_login') }}" method="post">
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="_username" value="{{ last_username }}" required autofocus>
-
+            <div>
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="_username" value="{{ last_username }}" required autofocus>
+            </div>
+        <div>
             <label for="password">Mot de passe:</label>
             <input type="password" id="password" name="_password">
+        </div>
 
     {#
     <label for="inputEmail">Email</label>

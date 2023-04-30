@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% block content %}
 <head>
     <title>Sortir.com | Connexion</title>
     <link rel="stylesheet" href="{{ asset('css/sortie.css') }}">
@@ -10,7 +10,7 @@
         <a href="{{ path('sortie_home') }}"><img src="{{ asset('img/Sortir_logo.png') }}" alt="Sortir.com"></a>
     </div>
 </header>
-
+{% endblock %}
 {% block body %}
 <section class="container my-3">
     <div class="row">

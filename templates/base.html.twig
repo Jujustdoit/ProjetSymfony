@@ -3,16 +3,26 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+
         {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
     </head>
+    <header>
+        <div class="logo">
+            <a href="{{ path('sortie_home') }}"><img src="{{ asset('img/Sortir_logo.png') }}" alt="Sortir.com"></a>
+        </div>
+        <nav>
+            {% if app.user.administrateur == true %}
+                <a href="#" title="Villes">Villes</a>
+                <a href="#" title="login">Campus</a>
+            {% endif %}
+
+            <a href="{{ path('sortie_home') }}" title="Accueil">Accueil</a>
+            <a href="#" title="Mon profil">Mon profil</a>
+            <a href="{{ path('app_logout') }}" title="Logout">Se deconnecter</a>
+        </nav>
+    </header>
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div class="flash flash-{{ label }}">

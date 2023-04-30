@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/sortie.css') }}">
-{% endblock %}
+{% block title %} {{ parent() }} | Affichage d'une sortie{% endblock %}
 
 {% block body %}
 
@@ -75,7 +73,5 @@
 
 {% endblock %}
 
-{% block title %}
 
-{% endblock %}
 

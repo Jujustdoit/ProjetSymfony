@@ -13,6 +13,10 @@
     min-height: 100vh;
 }
 
+h1 {
+    margin-bottom: 20px;
+}
+
 header {
     height: 150px;
     max-width: 1000px;

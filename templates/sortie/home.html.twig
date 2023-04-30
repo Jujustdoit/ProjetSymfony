@@ -1,10 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Affichage des sorties par campus{% endblock %}
-
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/sortie.css') }}">
-{% endblock %}
+{% block title %} {{ parent() }} | Accueil{% endblock %}
 
 {% block body %}
     <div class="container">

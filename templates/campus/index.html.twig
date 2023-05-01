@@ -31,11 +31,30 @@
                 <tr>
                     <td>{{ site.nom }}</td>
                     <td>
-                        <a href="{{ path('campus_update', {'id': site.id }) }}">Modifier</a>
-                        - <a href="{{ path('campus_delete', {'id': site.id }) }}">Supprimer</a>
+                        <a href="{{ path('campus_delete', {'id': site.id }) }}">Supprimer</a>
                     </td>
                 </tr>
             {% endfor %}
+                <tr>
+                    <td>
+                        {{ form_start(campusForm) }}
+
+                        {{ form_widget(campusForm.nom) }}
+                        {{ form_errors(campusForm.nom) }}
+
+                    </td>
+                    <td>
+                        {#  <a href="{{ path('campus_index') }}">Ajouter</a> #}
+
+
+                        <a href="{{ path('campus_index') }}" onclick="document.getElementById('submitCampusForm').click(); return false;">Ajouter</a>
+
+                        <input type="submit" id="submitCampusForm" name="submitCampusForm" style="display: none;">
+
+                        {{ form_end(campusForm) }}
+
+                    </td>
+                </tr>
 
         </table>
 

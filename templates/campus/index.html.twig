@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Gestion des campus {% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+        <h2>Gérer les campus</h2>
+
+        <h4>Filtrer les sites</h4>
+
+        {{ form_start(searchCampusForm) }}
+        <div>
+            {{ form_label(searchCampusForm.nomCampus) }}
+            {{ form_widget(searchCampusForm.nomCampus) }}
+            {{ form_errors(searchCampusForm.nomCampus) }}
+            <button type="submit" name="rechercher">Rechercher</button>
+        </div>
+        {{ form_end(searchCampusForm) }}
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Campus</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            {% for site in campus %}
+                <tr>
+                    <td>{{ site.nom }}</td>
+                    <td>
+                        <a href="{{ path('campus_update', {'id': site.id }) }}">Modifier</a>
+                        - <a href="{{ path('campus_delete', {'id': site.id }) }}">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+{% endblock %}

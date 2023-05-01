@@ -21,6 +21,20 @@ class VilleRepository extends ServiceEntityRepository
         parent::__construct($registry, Ville::class);
     }
 
+    public function filtrer($nom) {
+        $qb = $this->createQueryBuilder('v');
+
+        if ($nom) {
+            $qb->andWhere($qb->expr()->like('v.nom',':stringRecherche'))
+                ->setParameter('stringRecherche',"%{$nom}%");
+        }
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+    }
+
+
     public function save(Ville $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

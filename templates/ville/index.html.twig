@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Gestion des villes {% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+        <h2>Gérer les villes</h2>
+
+        <h4>Filtrer les villes</h4>
+
+        {{ form_start(searchVilleForm) }}
+        <div>
+            {{ form_label(searchVilleForm.nomVille) }}
+            {{ form_widget(searchVilleForm.nomVille) }}
+            {{ form_errors(searchVilleForm.nomVille) }}
+            <button type="submit" name="rechercher">Rechercher</button>
+        </div>
+        {{ form_end(searchVilleForm) }}
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ville</th>
+                    <th>Code postal</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+
+
+            {% for ville in villes %}
+            <tr>
+                <td>{{ville.nom }}</td>
+                <td>{{ville.codePostal }}</td>
+                <td>
+                    <a href="{{ path('ville_update', {'id': ville.id }) }}">Modifier</a>
+                    - <a href="{{ path('ville_delete', {'id': ville.id }) }}">Supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+{% endblock %}

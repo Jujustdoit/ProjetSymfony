@@ -35,11 +35,31 @@
                 <td>{{ville.nom }}</td>
                 <td>{{ville.codePostal }}</td>
                 <td>
-                    <a href="{{ path('ville_update', {'id': ville.id }) }}">Modifier</a>
-                    - <a href="{{ path('ville_delete', {'id': ville.id }) }}">Supprimer</a>
+                    <a href="{{ path('ville_delete', {'id': ville.id }) }}">Supprimer</a>
                 </td>
             </tr>
             {% endfor %}
+            <tr>
+                <td>
+                    {{ form_start(villeForm) }}
+
+                    {{ form_widget(villeForm.nom) }}
+                    {{ form_errors(villeForm.nom) }}
+
+                </td>
+                <td>
+                    {{ form_widget(villeForm.codePostal) }}
+                    {{ form_errors(villeForm.codePostal) }}
+                </td>
+                <td>
+                    <a href="{{ path('ville_index') }}" onclick="document.getElementById('submitVilleForm').click(); return false;">Ajouter</a>
+
+                    <input type="submit" id="submitVilleForm" name="submitVilleForm" style="display: none;">
+
+                    {{ form_end(villeForm) }}
+
+                </td>
+            </tr>
 
         </table>
 

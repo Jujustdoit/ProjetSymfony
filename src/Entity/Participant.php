@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 class Participant implements UserInterface, PasswordAuthenticatedUserInterface
@@ -18,6 +19,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\NotBlank([], 'Veuillez saisir votre e-mail')]
+    #[Assert\Length(null, max: 180, maxMessage: 'l\'e-mail ne doit pas dépasser 180 caractères')]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -27,18 +30,28 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank([], 'Veuillez saisir votre mot de passe')]
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank([], 'Veuillez saisir votre nom')]
+    #[Assert\Length(null, max: 50, maxMessage: 'La saisie de votre nom ne peut pas dépasser 50 caractères')]
     private ?string $nom = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank([], 'Veuillez saisir votre prénom')]
+    #[Assert\Length(null, max: 50, maxMessage: 'la saisie de votre prénom ne peut pas dépasser 50 caractères')]
+
     private ?string $prenom = null;
 
     #[ORM\Column(length: 10)]
+    #[Assert\NotBlank([], 'Veuillez saisir votre téléphone')]
+    #[Assert\Length(null, max: 10, maxMessage: 'le numéro de téléphone ne peut pas dépasser 10 caractères')]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank([], 'Veuillez saisir votre pseudo')]
+    #[Assert\Length(null, max: 50, maxMessage: 'Votre pseudo ne peut pas dépasser 50 caractères')]
     private ?string $pseudo = null;
 
     #[ORM\Column]

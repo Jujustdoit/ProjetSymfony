@@ -58,15 +58,6 @@ class SortieType extends AbstractType
                     'class'=>Lieu::class,
                     'choice_label'=>'nom'
             ])*/
-
-
-            /*->add('enregistrer', SubmitType::class, ['label'=> 'Enregistrer'])
-            ->add('publier', SubmitType::class, ['label'=> 'Publier la sortie']);*/
-
-            /*if ($this->authorizationChecker->isGranted('ROLE_ORGANISATEUR')) {
-                $builder->add('supprimer', SubmitType::class, ['label'=> 'Supprimer la sortie']);
-            }*/
-
         ;
     }
 

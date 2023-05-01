@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Ville;
 use App\Repository\VilleRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -14,12 +16,15 @@ use Symfony\Component\Routing\Annotation\Route;
 //#[Security('is_granted(\'ROLE_ADMINISTRATEUR\')')]
 class VilleController extends AbstractController
 {
-    #[Route('/', name: 'index')]
-    public function index(Request $request, VilleRepository $villeRepository): Response
+    #[Route('/index', name: 'index')]
+    public function index(Request $request, VilleRepository $villeRepository, EntityManagerInterface $entityManager): Response
     {
 
         $searchVilleForm = $this->createFormBuilder()
-            ->add('nomVille', TextType::class,['label' => 'Le nom contient : ','required'=> false])
+            ->add('nomVille', TextType::class,[
+                'label' => 'Le nom contient : ',
+                'required'=> false
+            ])
             ->getForm();
 
         $searchVilleForm->handleRequest($request);
@@ -33,19 +38,39 @@ class VilleController extends AbstractController
             $villes = $villeRepository->findAll();
         }
 
+        $villeForm = $this->createFormBuilder()
+            ->add('nom', TextType::class, ['required'=>false])
+            ->add('codePostal', TextType::class, ['required'=>false])
+            ->getForm();
+
+        $villeForm->handleRequest($request);
+
+        if ($villeForm->isSubmitted() && $villeForm->isValid()) {
+            $villeAjout = new Ville();
+            $villeAjout->setNom($villeForm->get('nom')->getData());
+            $villeAjout->setCodePostal($villeForm->get('codePostal')->getData());
+
+            $entityManager->persist($villeAjout);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('ville_index');
+        }
+
         return $this->render('ville/index.html.twig', [
             'searchVilleForm'=>$searchVilleForm->createView(),
-            'villes'=>$villes
+            'villes'=>$villes,
+            'villeForm'=>$villeForm->createView()
         ]);
     }
 
-    #[Route('/', name: 'update')]
-    public function update($id) {
+    #[Route('/delete/{id}', name: 'delete')]
+    public function delete($id, VilleRepository $villeRepository, EntityManagerInterface $entityManager) {
 
-    }
+        $ville = $villeRepository->find($id);
 
-    #[Route('/', name: 'delete')]
-    public function delete($id) {
+        $entityManager->remove($ville);
+        $entityManager->flush();
 
+        return $this->redirectToRoute('ville_index');
     }
 }

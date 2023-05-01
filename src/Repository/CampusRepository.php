@@ -21,6 +21,19 @@ class CampusRepository extends ServiceEntityRepository
         parent::__construct($registry, Campus::class);
     }
 
+    public function filtrer($nom) {
+        $qb = $this->createQueryBuilder('c');
+
+        if ($nom) {
+            $qb->andWhere($qb->expr()->like('c.nom',':stringRecherche'))
+                ->setParameter('stringRecherche',"%{$nom}%");
+        }
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+    }
+
     public function save(Campus $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

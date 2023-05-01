@@ -119,8 +119,6 @@ class SortieController extends AbstractController
                 $sortie->setEtat($etatRepository->findOneBy(['libelle'=>'Ouverte']));
             }
 
-            $villeNom = $lieuForm->getData('ville')->getNom();
-            $ville->setNom($villeNom);
             $entityManager->persist($ville);
             $entityManager->flush();
 
@@ -170,8 +168,6 @@ class SortieController extends AbstractController
 
         if ($sortieUpdateForm->isSubmitted() && $sortieUpdateForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
 
-            $villeNom = $lieuForm->getData('ville')->getNom();
-            $ville->setNom($villeNom);
             $lieu->setVille($ville);
             $sortie->setLieu($lieu);
 

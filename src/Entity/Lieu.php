@@ -133,4 +133,9 @@ class Lieu
 
         return $this;
     }
+
+    /*public function getNomVille(): ?string
+    {
+        return $this->getVille()->getNom();
+    }*/
 }

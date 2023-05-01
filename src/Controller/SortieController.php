@@ -17,6 +17,7 @@ use App\Repository\VilleRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -118,6 +119,8 @@ class SortieController extends AbstractController
                 $sortie->setEtat($etatRepository->findOneBy(['libelle'=>'Ouverte']));
             }
 
+            $villeNom = $lieuForm->getData('ville')->getNom();
+            $ville->setNom($villeNom);
             $entityManager->persist($ville);
             $entityManager->flush();
 
@@ -167,6 +170,8 @@ class SortieController extends AbstractController
 
         if ($sortieUpdateForm->isSubmitted() && $sortieUpdateForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
 
+            $villeNom = $lieuForm->getData('ville')->getNom();
+            $ville->setNom($villeNom);
             $lieu->setVille($ville);
             $sortie->setLieu($lieu);
 
@@ -179,7 +184,7 @@ class SortieController extends AbstractController
                 $this->addFlash('success','La sortie est supprimée !!');
             } else {
                 if ($request->request->has('enregistrer')){
-                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créér']));
+                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créée']));
                 } elseif ($request->request->has('publier')) {
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
                 }

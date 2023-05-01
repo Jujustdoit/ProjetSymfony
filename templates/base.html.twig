@@ -15,7 +15,7 @@
         </div>
         <nav>
             {% if app.user.administrateur == true %}
-               <a href="#" title="Villes">Villes</a>
+               <a href="{{ path('ville_index') }}" title="Villes">Villes</a>
                <a href="#" title="login">Campus</a>
             {% endif %}
 

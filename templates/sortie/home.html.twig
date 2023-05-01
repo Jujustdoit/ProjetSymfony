@@ -64,7 +64,6 @@
                 <th>Inscrit</th>
                 <th>Organisateur</th>
                 <th>Actions</th>
-                <th>Infos sortie</th>
             </tr>
             </thead>
             <tbody>
@@ -89,7 +88,9 @@
                         <a href="">{{ sortie.organisateur.nom }}</a>
                     </td>
                     <td>
-                        <a href="{{ path('sortie_show', {'id': sortie.id }) }}">Afficher</a>
+                        {% if (sortie.etat.libelle) != "Annulée" %}
+                            <a href="{{ path('sortie_show', {'id': sortie.id }) }}">Afficher</a>
+                        {% endif %}
 
                         {% if (sortie.etat.libelle == 'Ouverte')%}
                             - <a href="{{ path('sortie_inscription', {'idSortie':sortie.id, 'idUser':app.user.id}) }}">S'inscrire</a>

@@ -74,7 +74,12 @@
                     <td>{{ sortie.dateHeureDebut|date('d/m/Y h:i') }}</td>
                     <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
                     <td>{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</td>
-                    <td>{{ sortie.etat.libelle }}</td>
+                    <td>
+                        {{ sortie.etat.libelle }}
+                        {% if sortie.etat.libelle == "Annulée" %}
+                            - {{ sortie.infosSortie }}
+                        {% endif %}
+                    </td>
                     <td>
                         {% if app.user in sortie.participants %}
                             X
@@ -84,7 +89,7 @@
                         <a href="">{{ sortie.organisateur.nom }}</a>
                     </td>
                     <td>
-                                <a href="{{ path('sortie_show', {'id': sortie.id }) }}">Afficher</a>
+                        <a href="{{ path('sortie_show', {'id': sortie.id }) }}">Afficher</a>
 
                         {% if (sortie.etat.libelle == 'Ouverte')%}
                             - <a href="{{ path('sortie_inscription', {'idSortie':sortie.id, 'idUser':app.user.id}) }}">S'inscrire</a>
@@ -107,9 +112,6 @@
                                 - <a href="{{ path('sortie_annulation', {'id': sortie.id }) }}">Annuler</a>
                             {% endif %}
                         {% endif %}
-                    </td>
-                    <td>
-                        {{ sortie.infosSortie }}
                     </td>
                 </tr>
             {% endfor %}

@@ -47,12 +47,7 @@ class CampusController extends AbstractController
 
         $campusForm = $this->createFormBuilder()
             ->add('nom', TextType::class, [
-                'required'=>false,
-                'constraints'=>[
-                    new NotBlank([
-                        'message' => 'Veuillez saisir le nom du Campus'
-                    ])
-                ]
+                'required'=>false
             ])
             ->getForm();
 

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Utilitaires\UploadCsvIntegration;
 use App\Entity\Campus;
 use App\Repository\CampusRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,8 +19,9 @@ class CampusController extends AbstractController
 {
 
     #[Route('/index', name: 'index')]
-    public function index(Request $request, CampusRepository $campusRepository, EntityManagerInterface $entityManager): Response
+    public function index(UploadCsvIntegration $uploadCsvIntegration, Request $request, CampusRepository $campusRepository, EntityManagerInterface $entityManager): Response
     {
+        $uploadCsvIntegration->loadCsvAction();
 
         $searchCampusForm = $this->createFormBuilder()
             ->add('nomCampus', TextType::class,[

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -17,21 +18,28 @@ class Sortie
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank([], 'Veuillez saisir le nom de la sortie')]
+    #[Assert\Length(null, min: 3, max: 50, minMessage: 'le nom de la sortie doit être au moins de 3 caractères', maxMessage: 'le nom de la sortie doit faire au maximum 50 caractères')]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank([], 'Veuillez saisir l\'heure de début de la sortie')]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank([], 'Veuillez saisir la durée de la sortie')]
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank([], 'Veuillez saisir la date limite d\'inscription de la sortie')]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank([], 'Veuillez saisir le nombre d\'inscription maximum de la sortie')]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(null, max: 255, maxMessage: 'les informations de la sortie ne doivent pas dépasser 255 caractères')]
     private ?string $infosSortie = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
@@ -208,5 +216,25 @@ class Sortie
         }
 
         return $this;
+    }
+
+    /**
+     * Calcule la date de fin de l'événement en fonction de sa durée
+     *
+     * @return \DateTime
+     * @throws \Exception
+     */
+    public function getEndDate(): \DateTimeInterface
+    {
+        $endDate = clone $this->getDateHeureDebut();
+
+        if ($this->getDuree()){
+            $durationInterval = new \DateInterval("PT".$this->getDuree()."H");
+            $endDate = $endDate->add($durationInterval);
+        }
+        else {
+            $endDate->setTime(23, 59, 59);
+        }
+        return $endDate;
     }
 }

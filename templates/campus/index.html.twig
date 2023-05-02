@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Gestion des campus {% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+        <h2>Gérer les campus</h2>
+
+        <h4>Filtrer les sites</h4>
+
+        {{ form_start(searchCampusForm) }}
+        <div>
+            {{ form_label(searchCampusForm.nomCampus) }}
+            {{ form_widget(searchCampusForm.nomCampus) }}
+            {{ form_errors(searchCampusForm.nomCampus) }}
+            <button type="submit" name="rechercher">Rechercher</button>
+        </div>
+        {{ form_end(searchCampusForm) }}
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Campus</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            {% for site in campus %}
+                <tr>
+                    <td>{{ site.nom }}</td>
+                    <td>
+                        <a href="{{ path('campus_delete', {'id': site.id }) }}">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+                <tr>
+                    <td>
+                        {{ form_start(campusForm) }}
+
+                        {{ form_widget(campusForm.nom) }}
+                        {{ form_errors(campusForm.nom) }}
+
+                    </td>
+                    <td>
+                        {#  <a href="{{ path('campus_index') }}">Ajouter</a> #}
+
+
+                        <a href="{{ path('campus_index') }}" onclick="document.getElementById('submitCampusForm').click(); return false;">Ajouter</a>
+
+                        <input type="submit" id="submitCampusForm" name="submitCampusForm" style="display: none;">
+
+                        {{ form_end(campusForm) }}
+
+                    </td>
+                </tr>
+
+        </table>
+
+    </div>
+
+{% endblock %}

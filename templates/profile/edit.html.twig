@@ -9,7 +9,7 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Modifier mon profil{{ controller_name }}! ✅</h1>
+    <h1>Modifier mon profil{{ app.user.pseudo }}! ✅</h1>
 
     {{ form_start(form) }}
         {{ form_row(form.nom) }}
@@ -18,7 +18,7 @@
         {{ form_row(form.email) }}
         {{ form_row(form.password) }}
         {{ form_row(form.telephone) }}
-        {{ form_row(form.Enregistrer) }}
+        {{ form_row(form.enregistrer) }}
     {{ form_end(form) }}
-
+</div>
 {% endblock %}

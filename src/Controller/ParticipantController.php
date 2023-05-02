@@ -21,7 +21,7 @@ class ParticipantController extends AbstractController{
         $user = $this->getUser();
    
         // Créer un formulaire pour la modification de profil
-        $form = $this->createForm(ProfileUpdateType::class, $user);
+        $form = $this->createForm(ProfileUpdateType::class, data: $user);
    
         // Traiter la soumission du formulaire
         $form->handleRequest($request);
@@ -37,7 +37,7 @@ class ParticipantController extends AbstractController{
 
             if ($existingParticipant && $existingParticipant->getId() !== $user->getId()) {
                 $this->addFlash('erreur', 'Ce pseudo est déjà utilisé.');
-                return $this->redirectToRoute('profile_edit');
+                return $this->redirectToRoute('profile_update');
             }
               
         // Sauvegarder les modifications
@@ -45,7 +45,7 @@ class ParticipantController extends AbstractController{
 
         // Rediriger l'utilisateur vers la page de modification de profil avec un message de succès
                $this->addFlash('success', 'Votre profil a été mis à jour.');
-               return $this->redirectToRoute('profile_edit');
+               return $this->redirectToRoute('sortie_home');
              }
         // Afficher le formulaire de modification de profil
              return $this->render('profile/edit.html.twig', [ 

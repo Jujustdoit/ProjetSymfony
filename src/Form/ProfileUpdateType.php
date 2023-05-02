@@ -5,10 +5,12 @@ namespace App\Form;
 use App\Entity\Participant;
 use Doctrine\Common\Annotations\Annotation\Required;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -26,9 +28,9 @@ class ProfileUpdateType extends AbstractType
                 'type'=> PasswordType::class,
                 'invalid_message' => 'Les mots de passe doivent correspondre.',
                 'options'=> ['attr'=> ['class'=> 'password-field']],
-                'required'=> true,
-                'first_option'=>['label' => 'Mot de passe'],
-                'second_option'=>['label' => 'Répéter le mot de passe'],
+                'required'=> false,
+//                'first_option'=>['label' => 'Mot de passe'],
+//                'second_option'=>['label' => 'Répéter le mot de passe'],
             ])
             ->add('enregistrer', SubmitType::class)
             

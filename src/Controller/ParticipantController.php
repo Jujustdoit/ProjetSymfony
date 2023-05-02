@@ -9,12 +9,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class ParticipantController extends AbstractController{
 
     #[Route('/profile/update', name: 'profile_update')]
     
-    public function edit(Request $request, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         // Récupérer l'utilisateur actuel
         $user = $this->getUser();
@@ -28,7 +29,12 @@ class ParticipantController extends AbstractController{
         if ($form->isSubmitted() && $form->isValid()) {
             // Vérifier si le pseudo est unique
             $existingParticipant = $entityManager->getRepository(Participant::class)->findOneBy(['pseudo' => $user->getPseudo()]);
-        
+
+            assert($user instanceof Participant);
+            $newPassword = $userPasswordHasher->hashPassword($user, $user->getPassword());
+            $user->setPassword($newPassword);
+            $entityManager->persist($user);
+
             if ($existingParticipant && $existingParticipant->getId() !== $user->getId()) {
                 $this->addFlash('erreur', 'Ce pseudo est déjà utilisé.');
                 return $this->redirectToRoute('profile_edit');

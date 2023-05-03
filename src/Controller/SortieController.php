@@ -101,8 +101,6 @@ class SortieController extends AbstractController
         $lieuForm = $this->createForm(LieuType::class, $lieu);
         $lieuForm->handleRequest($request);
 
-        $ville = new Ville();
-
         if ($sortieCreateForm->isSubmitted() && $sortieCreateForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid()) {
             if (in_array("ROLE_PARTICIPANT", $organisateur->getRoles())) {
                 $organisateur->setRoles(["ROLE_ORGANISATEUR"]);
@@ -115,10 +113,6 @@ class SortieController extends AbstractController
             } elseif ($request->request->has('publier')) {
                 $sortie->setEtat($etatRepository->findOneBy(['libelle'=>'Ouverte']));
             }
-
-            $ville = $lieu->getVille();
-            $entityManager->persist($ville);
-            $entityManager->flush();
 
             $entityManager->persist($lieu);
             $entityManager->flush();
@@ -156,13 +150,8 @@ class SortieController extends AbstractController
         $lieuForm = $this->createForm(LieuType::class, $lieu);
         $lieuForm->handleRequest($request);
 
-        $ville = $villeRepository->find($lieu->getVille()->getId());
-        $villeForm = $this->createForm(VilleType::class, $ville);
-        $villeForm->handleRequest($request);
+        if ($sortieUpdateForm->isSubmitted() && $sortieUpdateForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid()) {
 
-        if ($sortieUpdateForm->isSubmitted() && $sortieUpdateForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
-
-            $lieu->setVille($ville);
             $sortie->setLieu($lieu);
 
             if ($request->request->has('supprimer')) {
@@ -178,9 +167,6 @@ class SortieController extends AbstractController
                 } elseif ($request->request->has('publier')) {
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
                 }
-
-                $entityManager->persist($ville);
-                $entityManager->flush();
 
                 $entityManager->persist($lieu);
                 $entityManager->flush();
@@ -199,8 +185,7 @@ class SortieController extends AbstractController
         }
 
         return $this->render('sortie/update.html.twig',['sortieForm' => $sortieUpdateForm->createView(),
-            'lieuForm'=>$lieuForm->createView(),
-            'villeForm'=>$villeForm->createView()]);
+            'lieuForm'=>$lieuForm->createView()]);
     }
 
     #[Route('/annulation/{id}', name: 'annulation')]

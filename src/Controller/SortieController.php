@@ -62,6 +62,7 @@ class SortieController extends AbstractController
 
         if ($criteresForm->isSubmitted() && $criteresForm->isValid()) {
             $donnees = $criteresForm->getData();
+            dump($donnees);
             $sorties = $sortieRepository->filtrer(
                 $donnees['campus'],
                 $donnees['nomSortie'],

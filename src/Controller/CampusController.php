@@ -90,6 +90,7 @@ class CampusController extends AbstractController
         return $this->redirectToRoute('campus_index');
     }
 
+    /* Cette fonction gère l'upload de fichier CSV et à l'issu le retrait du fichier correspondantt les éléments de la vue de la page d'Upload*/
     #[Route('/uploadCsv', name: 'uploadCsv')]
     public function uploadCsv(ParameterBagInterface $parameterBag, CampusRepository $campusRepository, UploadCsvIntegration $uploadCsvIntegration, UserPasswordHasherInterface $userPasswordHasher, Request $request, EntityManagerInterface $entityManager)
     {
@@ -132,7 +133,7 @@ class CampusController extends AbstractController
 
         return $this->render('campus/upload.html.twig', [
             'fichiersCsv' => $nomFichiers,
-            'nouveauxParticipants' => $nouveauxParticipants,
+            //'nouveauxParticipants' => $nouveauxParticipants,
             'formViews' => $formViews,
         ]);
     }

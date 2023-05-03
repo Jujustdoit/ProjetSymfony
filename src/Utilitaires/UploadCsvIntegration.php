@@ -12,17 +12,20 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UploadCsvIntegration
 {
+
+    /* Charge un fichier CSV, lit les enregistrements et intègre chaque participant à la base de données */
     public function loadCsvAction($nomFichier, $dossier, CampusRepository $campusRepository, ParameterBagInterface $parameterBag, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager)
     {
         // Chemin vers fichier CSV
         $fichierCsv = $dossier.'/'.$nomFichier;
 
+        // Instance de l'objet Reader pour lire le CSV ('r' : mode lecture)
         $reader = Reader::createFromPath($fichierCsv, 'r');
 
-        // Instance de Statement pour utiliser des requêtes sur le fichier CSV
+        // Instance de Statement (objet Reader) pour utiliser des requêtes sur le fichier CSV
         $stmt = new Statement();
 
-        // Utilisez le Statement pour exécuter une requête et récupérer les enregistrements
+        // Requête pour récupérer les enregistrements
         $donnees = $stmt->process($reader);
 
         $participants = [];

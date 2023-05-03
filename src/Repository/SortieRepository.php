@@ -45,11 +45,11 @@ class SortieRepository extends ServiceEntityRepository
             $qb->andWhere($qb->expr()->eq('s.organisateur', ':idOrganisateur'))
                 ->setParameter('idOrganisateur',$idOrganisateur);
         }
-        if($inscrit == true && $pasInscrit == false){
+        if($inscrit && !$pasInscrit){
             $qb->addSelect('p')
                 ->join('s.participants', 'p')
                 ->andWhere($qb->expr()->isMemberOf(':participant', 's.participants'))
-                ->setParameter('participant', $inscrit);
+                ->setParameter('participant', $idOrganisateur);
         }
         if($inscrit == false && $pasInscrit == true) {
             $qb->addSelect('p')
@@ -59,7 +59,7 @@ class SortieRepository extends ServiceEntityRepository
         }
         if($sortiesPassees == true){
             $qb->andWhere('s.etat = :etat')
-                ->setParameter('etat',$sortiesPassees);
+                ->setParameter('etat','Passée');
         }
 
         $query = $qb->getQuery();

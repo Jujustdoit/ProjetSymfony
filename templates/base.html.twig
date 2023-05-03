@@ -16,7 +16,6 @@
         <nav>
             {% if app.user.administrateur == true %}
 
-                <a href="{{ path('ville_index') }}" title="Villes">Villes</a>
                 <a href="{{ path('campus_index') }}" title="login">Campus</a>
                 <a href="{{ path('campus_uploadCsv') }}" title="uploadCsv">Upload</a>
 
@@ -24,6 +23,7 @@
 
             <a href="{{ path('sortie_home') }}" title="Accueil">Accueil</a>
             <a href="{{ path('profile_update') }}" title="Mon profil">Mon profil</a>
+            <a href="{{ path('ville_index') }}" title="Villes">Villes des sorties</a>
             <a href="{{ path('app_logout') }}" title="Logout">Se deconnecter</a>
         </nav>
     </header>

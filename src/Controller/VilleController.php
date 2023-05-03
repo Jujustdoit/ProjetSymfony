@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/ville', name: 'ville_')]
-//#[Security('is_granted(\'ROLE_ADMINISTRATEUR\')')]
+//#[Security('is_granted(\'ROLE_PARTICIPANT\')')]
 class VilleController extends AbstractController
 {
     #[Route('/index', name: 'index')]

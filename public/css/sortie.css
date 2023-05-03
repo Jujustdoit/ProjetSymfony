@@ -95,6 +95,7 @@ button {
 
 button:hover {
     background: linear-gradient(to right, #ff0000, #cc0000);
+    cursor: pointer;
 }
 
 .table {
@@ -123,6 +124,11 @@ button:hover {
 
 .table tbody tr:hover {
     background-color: #ddd;
+}
+
+.espacement {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .flash {

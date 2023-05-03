@@ -2,14 +2,20 @@
 
 namespace App\Controller;
 
+use App\Entity\Participant;
 use App\Utilitaires\UploadCsvIntegration;
 use App\Entity\Campus;
 use App\Repository\CampusRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -19,10 +25,8 @@ class CampusController extends AbstractController
 {
 
     #[Route('/index', name: 'index')]
-    public function index(UploadCsvIntegration $uploadCsvIntegration, Request $request, CampusRepository $campusRepository, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, CampusRepository $campusRepository, EntityManagerInterface $entityManager): Response
     {
-        $uploadCsvIntegration->loadCsvAction();
-
         $searchCampusForm = $this->createFormBuilder()
             ->add('nomCampus', TextType::class,[
                 'label' => 'Le nom contient : ',
@@ -85,4 +89,52 @@ class CampusController extends AbstractController
 
         return $this->redirectToRoute('campus_index');
     }
+
+    #[Route('/uploadCsv', name: 'uploadCsv')]
+    public function uploadCsv(ParameterBagInterface $parameterBag, CampusRepository $campusRepository, UploadCsvIntegration $uploadCsvIntegration, UserPasswordHasherInterface $userPasswordHasher, Request $request, EntityManagerInterface $entityManager)
+    {
+        $filesystem = new Filesystem();
+
+        $dossierCsv = $parameterBag->get('kernel.project_dir') . '/public/upload/participants';
+
+        $nouveauxParticipants = [];
+
+        $finder = new Finder();
+        $fichiers = $finder->files()->in($dossierCsv);
+
+        $formViews = []; // Stocke les vues des formulaires
+        $nomFichiers = [];
+
+        foreach ($fichiers as $index => $fichier) {
+            $nomFichier = $fichier->getFilename();
+            $nomFichiers[] = $nomFichier;
+
+            $form = $this->createFormBuilder()
+                ->add('nomFichier', HiddenType::class, [
+                    'data' => $nomFichier,
+                ])
+                ->setAction($this->generateUrl('campus_uploadCsv'))
+                ->getForm();
+
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $nomFichier = $form->get('nomFichier')->getData();
+                $uploadCsvIntegration = new UploadCsvIntegration();
+                $nouveauxParticipants = $uploadCsvIntegration->loadCsvAction($nomFichier, $dossierCsv, $campusRepository, $parameterBag, $userPasswordHasher, $entityManager);
+                $filesystem->remove($dossierCsv . '/' . $nomFichier);
+                return $this->redirectToRoute('campus_uploadCsv');
+            }
+
+            $formViews[] = $form->createView(); // Ajoute la vue du formulaire à la liste
+
+        }
+
+        return $this->render('campus/upload.html.twig', [
+            'fichiersCsv' => $nomFichiers,
+            'nouveauxParticipants' => $nouveauxParticipants,
+            'formViews' => $formViews,
+        ]);
+    }
+
 }

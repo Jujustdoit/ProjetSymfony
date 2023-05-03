@@ -17,7 +17,8 @@ class LieuType extends AbstractType
             ->add('ville', EntityType::class,
                 [   'label'=>'Ville : ',
                     'class'=>Ville::class,
-                    'choice_label'=>'nom'
+                    'choice_label'=>'nom',
+                    'data_class'=>null
                 ])
             ->add('nom', null, ['label'=>'Nom du lieu : '])
             ->add('rue', null, ['label'=>'Rue : '])

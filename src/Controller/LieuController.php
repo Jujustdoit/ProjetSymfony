@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/lieu', name: 'lieu_')]
+//#[Security('is_granted(\'ROLE_PARTICIPANT\')')]
 class LieuController extends AbstractController
 {
     #[Route('/index', name: 'index')]

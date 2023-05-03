@@ -9,7 +9,6 @@
         <h3>Créer une sortie</h3>
 
         {{ form_start(sortieForm) }}
-        {{ form_start(villeForm) }}
         {{ form_start(lieuForm) }}
 
         <div>
@@ -52,9 +51,9 @@
         <h3>Créer un lieu de sortie</h3>
 
         <div>
-            {{ form_label(villeForm.nom) }}
-            {{ form_widget(villeForm.nom) }}
-            {{ form_errors(villeForm.nom) }}
+            {{ form_label(lieuForm.ville) }}
+            {{ form_widget(lieuForm.ville) }}
+            {{ form_errors(lieuForm.ville) }}
         </div>
 
         <div>
@@ -67,12 +66,6 @@
             {{ form_label(lieuForm.rue) }}
             {{ form_widget(lieuForm.rue) }}
             {{ form_errors(lieuForm.rue) }}
-        </div>
-
-        <div>
-            {{ form_label(villeForm.codePostal) }}
-            {{ form_widget(villeForm.codePostal) }}
-            {{ form_errors(villeForm.codePostal) }}
         </div>
 
         <div>
@@ -99,7 +92,6 @@
             {{ form_label(sortieForm.publier) }}
             {{ form_widget(sortieForm.publier) }}#}
 
-        {{ form_end(villeForm) }}
         {{ form_end(lieuForm) }}
         {{ form_end(sortieForm) }}
 

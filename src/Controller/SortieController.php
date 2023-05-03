@@ -102,10 +102,8 @@ class SortieController extends AbstractController
         $lieuForm->handleRequest($request);
 
         $ville = new Ville();
-        $villeForm = $this->createForm(VilleType::class, $ville);
-        $villeForm->handleRequest($request);
 
-        if ($sortieCreateForm->isSubmitted() && $sortieCreateForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid() && $villeForm->isSubmitted() && $villeForm->isValid()) {
+        if ($sortieCreateForm->isSubmitted() && $sortieCreateForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid()) {
             if (in_array("ROLE_PARTICIPANT", $organisateur->getRoles())) {
                 $organisateur->setRoles(["ROLE_ORGANISATEUR"]);
                 $entityManager->persist($organisateur);
@@ -118,10 +116,9 @@ class SortieController extends AbstractController
                 $sortie->setEtat($etatRepository->findOneBy(['libelle'=>'Ouverte']));
             }
 
+            $ville = $lieu->getVille();
             $entityManager->persist($ville);
             $entityManager->flush();
-
-            $lieu->setVille($ville);
 
             $entityManager->persist($lieu);
             $entityManager->flush();
@@ -139,9 +136,7 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_home');
         }
         return $this->render('sortie/create.html.twig',['sortieForm' => $sortieCreateForm->createView(),
-            'lieuForm'=>$lieuForm->createView(),
-            'villeForm'=>$villeForm->createView()]);
-
+            'lieuForm'=>$lieuForm->createView()]);
     }
 
     #[Route('/update/{id}', name: 'update')]

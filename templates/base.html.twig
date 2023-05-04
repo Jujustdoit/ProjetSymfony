@@ -25,14 +25,16 @@
                         </div>
                         <nav >
                             {% if app.user.administrateur == true %}
-                                <a class="mobile-display" href="{{ path('ville_index') }}" title="Villes">Villes</a>
                                 <a class="mobile-display" href="{{ path('campus_index') }}" title="login">Campus</a>
+                                <a class="mobile-display" href="{{ path('campus_uploadCsv') }}" title="uploadCsv">Upload</a>
                             {% endif %}
 
                             <a href="{{ path('sortie_home') }}" title="Accueil">Accueil</a>
-                            <a href="#" title="Mon profil">Mon profil</a> {# TODO or DONE see guys #}
+                            <a href="{{ path('profile_update') }}" title="Mon profil">Mon profil</a>
+                            <a href="{{ path('ville_index') }}" title="Villes">Villes de nos sorties</a>
+                            <a href="{{ path('lieu_index') }}" title="Lieux">Lieux de nos sorties</a>
                             <a href="{{ path('app_logout') }}" title="Logout">Se deconnecter</a>
-                        </nav>
+                                        </nav>
                     </header>
                 {% endblock %}
 
@@ -56,6 +58,7 @@
                     </div>
 
                 {#    affichage du statut connecté et lien de déconnexion
+
     {% if app.user %}
         <div class="mb-3">
             Vous êtes connecté(e) comme {{ app.user.nom }}, <a href="{{ path('app_logout') }}">Me déconnecter</a>

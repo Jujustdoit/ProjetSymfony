@@ -23,6 +23,9 @@ class SortieRepository extends ServiceEntityRepository
 
     public function filtrer($campus, $nomSortie, $dateMin, $dateMax, $organisateur, $inscrit, $pasInscrit, $sortiesPassees, $idOrganisateur): array {
 
+        $aujourdhui = new \DateTime();
+        $aujourdhui->setTime(0,0,0);
+
         $qb = $this->createQueryBuilder('s')
             ->addSelect('e')
             ->join('s.etat', 'e');
@@ -45,21 +48,23 @@ class SortieRepository extends ServiceEntityRepository
             $qb->andWhere($qb->expr()->eq('s.organisateur', ':idOrganisateur'))
                 ->setParameter('idOrganisateur',$idOrganisateur);
         }
-        if($inscrit == true && $pasInscrit == false){
+        if($inscrit && !$pasInscrit){
             $qb->addSelect('p')
                 ->join('s.participants', 'p')
                 ->andWhere($qb->expr()->isMemberOf(':participant', 's.participants'))
-                ->setParameter('participant', $inscrit);
+                ->setParameter('participant', $idOrganisateur);
         }
-        if($inscrit == false && $pasInscrit == true) {
+        if(!$inscrit && $pasInscrit) {
             $qb->addSelect('p')
                 ->leftJoin('s.participants', 'p')
                 ->andWhere(':participant NOT MEMBER OF s.participants')
                 ->setParameter('participant', $idOrganisateur);
         }
-        if($sortiesPassees == true){
-            $qb->andWhere('s.etat = :etat')
-                ->setParameter('etat',$sortiesPassees);
+        if($sortiesPassees){
+            $qb //->andWhere('s.etat = :etat')
+                //->setParameter('etat','Passée');
+                ->andWhere($qb->expr()->lt('s.dateHeureDebut', ':aujourdhui'))
+                ->setParameter('aujourdhui', $aujourdhui);
         }
 
         $query = $qb->getQuery();

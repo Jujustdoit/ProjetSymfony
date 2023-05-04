@@ -116,4 +116,4 @@ button:hover {
     text-align: center;
 }
 
-.flash-success {background-color: lawngreen}
+.flash-success {background-color: #23bf5d; color: whitesmoke;z-index:1;}

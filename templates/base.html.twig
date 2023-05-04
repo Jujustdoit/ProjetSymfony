@@ -23,10 +23,10 @@
                         <div class="logo">
                             <a href="{{ path('sortie_home') }}"><img src="{{ asset('img/Sortir_logo.png') }}" alt="Sortir.com"></a>
                         </div>
-                        <nav>
+                        <nav >
                             {% if app.user.administrateur == true %}
-                                <a href="{{ path('ville_index') }}" title="Villes">Villes</a>
-                                <a href="{{ path('campus_index') }}" title="login">Campus</a>
+                                <a class="mobile-display" href="{{ path('ville_index') }}" title="Villes">Villes</a>
+                                <a class="mobile-display" href="{{ path('campus_index') }}" title="login">Campus</a>
                             {% endif %}
 
                             <a href="{{ path('sortie_home') }}" title="Accueil">Accueil</a>
@@ -39,18 +39,21 @@
             </div>
 
 
-            {% block flashes %}
-                {% for label, messages in app.flashes %}
-                    {% for message in messages %}
-                        <div class="flash flash-{{ label }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endfor %}
-            {% endblock %}
+
 
             <div class="body_content">
                 <body>
+                    <div class="flashes">
+                        {% block flashes %}
+                            {% for label, messages in app.flashes %}
+                                {% for message in messages %}
+                                    <div class="flash flash-{{ label }}">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endblock %}
+                    </div>
 
                 {#    affichage du statut connecté et lien de déconnexion
     {% if app.user %}
@@ -59,7 +62,7 @@
         </div>
     {% endif %}#}
 
-                {% block body %}
+                {% block body_content %}
                 {% endblock %}
                 </body>
             </div>

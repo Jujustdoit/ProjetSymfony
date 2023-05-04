@@ -8,6 +8,7 @@ header {
     position: fixed;
     width: -moz-available; /* ne reconnait pas mais reconnu dans mozilla*/
     top:0 ;
+    z-index: auto;
 }
 
 body{
@@ -53,6 +54,9 @@ body{
 }
 
 @media (max-width: 767px) {
+    .mobile-display{
+        display:none;
+    }
     .sidebar {
         /*position: relative;
         width: 100%;
@@ -124,6 +128,7 @@ h2 span{
     margin: 50px auto;
     width: 500px;
 }
+
 
 
 

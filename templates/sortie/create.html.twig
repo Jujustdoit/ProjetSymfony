@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} {{ parent() }} | Création Sortie{% endblock %}
+{% block title %}Création Sortie{% endblock %}
 
 {% block body_content %}
 
-    <div >
+    <div style="text-align:center;" >
 
         <h3>Créer une sortie</h3>
 
@@ -38,7 +38,7 @@
             <span>minutes</span>
             {{ form_errors(sortieForm.duree) }}
         </div>
-        <div class="textArea">
+        <div style="display: inline-flex">
             {{ form_label(sortieForm.infosSortie) }}
             {{ form_widget(sortieForm.infosSortie) }}
             {{ form_errors(sortieForm.infosSortie) }}

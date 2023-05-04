@@ -85,6 +85,7 @@ button:hover {
     max-width: 800px;
     margin: 0 auto;
     font-size: 16px;
+    table-layout: fixed;
 }
 
 .table th, .table td {

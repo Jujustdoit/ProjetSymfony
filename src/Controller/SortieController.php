@@ -3,12 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Campus;
-use App\Entity\Lieu;
 use App\Entity\Sortie;
-use App\Entity\Ville;
-use App\Form\LieuType;
 use App\Form\SortieType;
-use App\Form\VilleType;
 use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
@@ -62,7 +58,6 @@ class SortieController extends AbstractController
 
         if ($criteresForm->isSubmitted() && $criteresForm->isValid()) {
             $donnees = $criteresForm->getData();
-            dump($donnees);
             $sorties = $sortieRepository->filtrer(
                 $donnees['campus'],
                 $donnees['nomSortie'],
@@ -97,11 +92,7 @@ class SortieController extends AbstractController
         $sortieCreateForm = $this->createForm(SortieType::class, $sortie);
         $sortieCreateForm->handleRequest($request);
 
-        $lieu = new Lieu();
-        $lieuForm = $this->createForm(LieuType::class, $lieu);
-        $lieuForm->handleRequest($request);
-
-        if ($sortieCreateForm->isSubmitted() && $sortieCreateForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid()) {
+        if ($sortieCreateForm->isSubmitted() && $sortieCreateForm->isValid()) {
             if (in_array("ROLE_PARTICIPANT", $organisateur->getRoles())) {
                 $organisateur->setRoles(["ROLE_ORGANISATEUR"]);
                 $entityManager->persist($organisateur);
@@ -114,11 +105,6 @@ class SortieController extends AbstractController
                 $sortie->setEtat($etatRepository->findOneBy(['libelle'=>'Ouverte']));
             }
 
-            $entityManager->persist($lieu);
-            $entityManager->flush();
-
-            $sortie->setLieu($lieu);
-
             $entityManager->persist($sortie);
             $entityManager->flush();
 
@@ -129,8 +115,7 @@ class SortieController extends AbstractController
             }
             return $this->redirectToRoute('sortie_home');
         }
-        return $this->render('sortie/create.html.twig',['sortieForm' => $sortieCreateForm->createView(),
-            'lieuForm'=>$lieuForm->createView()]);
+        return $this->render('sortie/create.html.twig',['sortieForm' => $sortieCreateForm->createView()]);
     }
 
     #[Route('/update/{id}', name: 'update')]
@@ -146,13 +131,7 @@ class SortieController extends AbstractController
 
         $sortieUpdateForm->handleRequest($request);
 
-        $lieu = $lieuRepository->find($sortie->getLieu()->getId());
-        $lieuForm = $this->createForm(LieuType::class, $lieu);
-        $lieuForm->handleRequest($request);
-
-        if ($sortieUpdateForm->isSubmitted() && $sortieUpdateForm->isValid() && $lieuForm->isSubmitted() && $lieuForm->isValid()) {
-
-            $sortie->setLieu($lieu);
+        if ($sortieUpdateForm->isSubmitted() && $sortieUpdateForm->isValid()) {
 
             if ($request->request->has('supprimer')) {
                 if (count($sortie->getOrganisateur()->getSorties()) == 1) {
@@ -168,9 +147,6 @@ class SortieController extends AbstractController
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
                 }
 
-                $entityManager->persist($lieu);
-                $entityManager->flush();
-
                 $entityManager->persist($sortie);
                 $entityManager->flush();
 
@@ -184,8 +160,7 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_home');
         }
 
-        return $this->render('sortie/update.html.twig',['sortieForm' => $sortieUpdateForm->createView(),
-            'lieuForm'=>$lieuForm->createView()]);
+        return $this->render('sortie/update.html.twig',['sortieForm' => $sortieUpdateForm->createView()]);
     }
 
     #[Route('/annulation/{id}', name: 'annulation')]

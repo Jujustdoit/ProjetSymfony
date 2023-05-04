@@ -24,7 +24,7 @@
                         {{ fichier }}
                     </td>
                     <td>
-                        // loop.index0 permet de récupérer l'index de la boucle à partir de 0
+                        {#  loop.index0 permet de récupérer l'index de la boucle à partir de 0 #}
                         {{ form_start(formViews[loop.index0]) }}
                         {{ form_widget(formViews[loop.index0].nomFichier) }}
                         <button type="submit">Traiter</button>

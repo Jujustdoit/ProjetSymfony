@@ -26,11 +26,18 @@ class ProfileUpdateType extends AbstractType
             ->add('telephone', TelType::class)
             ->add('password', RepeatedType::class, [
                 'type'=> PasswordType::class,
-                'invalid_message' => 'Les mots de passe doivent correspondre.',
-                'options'=> ['attr'=> ['class'=> 'password-field']],
-                'required'=> false,
-//                'first_option'=>['label' => 'Mot de passe'],
-//                'second_option'=>['label' => 'Répéter le mot de passe'],
+                'first_option'=>[
+                    'label' => 'Nouveau mot de passe :',
+                    'attr'=>[
+                        'maxlength'=>50
+                        ]
+                    ],
+                'second_option'=>[
+                    'label' => 'Confirmez le mot de passe',
+                    'attr'=>[
+                        'maxlength'=>50
+                        ]
+                    ],
             ])
             ->add('enregistrer', SubmitType::class)
             

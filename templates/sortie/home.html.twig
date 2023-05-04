@@ -2,6 +2,12 @@
 
 {% block title %} {{ parent() }} | Accueil{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }} |
+    <script src="asset{{ '/javascript/filters.js' }}" type="text/javascript"></script>
+
+{% endblock %}
+
 {% block body %}
     <div class="container">
 
@@ -11,46 +17,52 @@
         </div>
 
         <h2>Filtrer les sorties</h2>
+        <div class = "filters-container">
+            <button onclick="toggleFilters()">Filtres</button>
+            <div id ="filter-bar" >
+                {{ form_start(criteres) }}
+                {# <div> #}
+                    {{ form_label(criteres.campus) }}
+                    {{ form_widget(criteres.campus) }}
+                {# </div>
+                <div> #}
+                    {{ form_label(criteres.nomSortie) }}
+                    {{ form_widget(criteres.nomSortie) }}
+                {# </div>
+                <div> #}
+                    {{ form_label(criteres.dateMin) }}
+                    {{ form_widget(criteres.dateMin) }}
+                {# </div>
+                <div> #}
+                    {{ form_label(criteres.dateMax) }}
+                    {{ form_widget(criteres.dateMax) }}
+                {# </div>
+                <div> #}
+                    {{ form_label(criteres.organisateur) }}
+                    {{ form_widget(criteres.organisateur) }}
+                {# </div>
+                <div> #}
+                    {{ form_label(criteres.inscrit) }}
+                    {{ form_widget(criteres.inscrit) }}
+                {# </div>
+                <div> #}
+                    {{ form_label(criteres.pasInscrit) }}
+                    {{ form_widget(criteres.pasInscrit) }}
+                {# </div>
+                <div> #}
+                    {{ form_label(criteres.sortiesPassees) }}
+                    {{ form_widget(criteres.sortiesPassees) }}
+                {# </div>
+                <div> #}
+                    {{ form_label(criteres.recherche) }}
+                    {{ form_widget(criteres.recherche) }}
+                {# </div> #}
 
-        {{ form_start(criteres) }}
-            <div>
-                {{ form_label(criteres.campus) }}
-                {{ form_widget(criteres.campus) }}
+                {{ form_end(criteres) }}
             </div>
-            <div>
-                {{ form_label(criteres.nomSortie) }}
-                {{ form_widget(criteres.nomSortie) }}
-            </div>
-            <div>
-                {{ form_label(criteres.dateMin) }}
-                {{ form_widget(criteres.dateMin) }}
-            </div>
-            <div>
-                {{ form_label(criteres.dateMax) }}
-                {{ form_widget(criteres.dateMax) }}
-            </div>
-            <div>
-                {{ form_label(criteres.organisateur) }}
-                {{ form_widget(criteres.organisateur) }}
-            </div>
-            <div>
-                {{ form_label(criteres.inscrit) }}
-                {{ form_widget(criteres.inscrit) }}
-            </div>
-            <div>
-                {{ form_label(criteres.pasInscrit) }}
-                {{ form_widget(criteres.pasInscrit) }}
-            </div>
-            <div>
-                {{ form_label(criteres.sortiesPassees) }}
-                {{ form_widget(criteres.sortiesPassees) }}
-            </div>
-            <div>
-                {{ form_label(criteres.recherche) }}
-                {{ form_widget(criteres.recherche) }}
-            </div>
+        </div>
 
-        {{ form_end(criteres) }}
+
 
 
         <table class="table">

@@ -4,72 +4,63 @@
 
 {% block body %}
 
-    <div class="container">
-        <h3>Afficher une sortie</h3>
+    <h2><span>Afficher une sortie</span></h2>
 
-        <div>
+    <div class="center-div">
 
-            <p>
-                Nom de la sortie : {{ sortie.nom }}
-            </p>
-            <p>
-                Date et heure de la sortie : {{ sortie.dateHeureDebut|date('d/m/Y h:i') }}
-            </p>
-            <p>
-                Date limite d'inscription : {{ sortie.dateLimiteInscription|date('d/m/Y') }}
-            </p>
-            <p>
-                Nombre de places : {{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}
-            </p>
-            <p>
-                Durée : {{ sortie.duree }} minutes
-            </p>
-            <p>
-                Description et infos : {{ sortie.infosSortie }}
-            </p>
-            <p>
-                Campus : {{ sortie.campus.nom }}
-            </p>
-            <p>
-                Lieu : {{ sortie.lieu.nom }}
-            </p>
-            <p>
-                Rue : {{ sortie.lieu.rue }}
-            </p>
-            <p>
-                Code postal : {{ sortie.lieu.ville.codePostal }}
-            </p>
-            <p>
-                Latitude : {{ sortie.lieu.latitude }}
-            </p>
-            <p>
-                Longitude : {{ sortie.lieu.longitude }}
-            </p>
+        <label> Nom de la sortie : </label>{{ sortie.nom }}
+        <br>
 
-        </div>
 
-        <div>
-            <h3>Liste des participants inscrits :</h3>
+        <label>Date et heure de la sortie : </label>{{ sortie.dateHeureDebut|date('d/m/Y h:i') }}
+        <br>
+        <br>
 
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Pseudo</th>
-                    <th>Nom</th>
-                </tr>
-                </thead>
-                <tbody>
-                    {% for participant in participants %}
-                        <tr>
-                            <td>{{ participant.pseudo }}</td>
-                            <td>{{ participant.nom }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <label>Date limite d'inscription : </label>{{ sortie.dateLimiteInscription|date('d/m/Y') }}
+        <br><br>
+        <label>Nombre de places : </label>{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}
+        <br><br>
+        <label>Durée : </label>{{ sortie.duree }} minutes
+        <br><br>
+        <label>Description et infos : </label>{{ sortie.infosSortie }}
+        <br><br>
+        <label>Campus :</label> {{ sortie.campus.nom }}
+        <br><br>
+        <label>Lieu : </label>{{ sortie.lieu.nom }}
+        <br><br>
+        <label>Rue : </label>{{ sortie.lieu.rue }}
+        <br><br>
+        <label>Code postal : </label>{{ sortie.lieu.ville.codePostal }}
+        <br><br>
+        <label>Latitude :</label> {{ sortie.lieu.latitude }}
+        <br><br>
+        <label>Longitude : </label>{{ sortie.lieu.longitude }}
+        <br><br>
 
-        </div>
     </div>
+
+    <div>
+        <h2><span>Liste des participants inscrits :</span></h2>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Pseudo</th>
+                <th>Nom</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for participant in participants %}
+                    <tr>
+                        <td>{{ participant.pseudo }}</td>
+                        <td>{{ participant.nom }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
 
 {% endblock %}
 

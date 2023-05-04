@@ -4,27 +4,12 @@
     box-sizing: border-box;
 }
 
-.container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
 
 h1 {
     margin-bottom: 20px;
 }
 
-header {
-    height: 150px;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-}
+
 
 .logo {
     margin-right: 20px;
@@ -71,9 +56,6 @@ select {
     box-sizing: border-box;
     width: 150px;
     max-width: 50%;
-}
-h2, h3 {
-    text-align: center;
 }
 
 button {

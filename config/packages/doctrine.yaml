@@ -16,6 +16,7 @@ doctrine:
                 prefix: 'App\Entity'
                 alias: App
 
+
 when@test:
     doctrine:
         dbal:
@@ -41,3 +42,8 @@ when@prod:
                     adapter: cache.app
                 doctrine.system_cache_pool:
                     adapter: cache.system
+
+parameters:
+    env(DATABASE_URL): 'mysql://root:@127.0.0.1:3308/sorties'
+    database_user: root
+    database_password:

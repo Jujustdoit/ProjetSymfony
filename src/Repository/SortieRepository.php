@@ -23,6 +23,9 @@ class SortieRepository extends ServiceEntityRepository
 
     public function filtrer($campus, $nomSortie, $dateMin, $dateMax, $organisateur, $inscrit, $pasInscrit, $sortiesPassees, $idOrganisateur): array {
 
+        $aujourdhui = new \DateTime();
+        $aujourdhui->setTime(0,0,0);
+
         $qb = $this->createQueryBuilder('s')
             ->addSelect('e')
             ->join('s.etat', 'e');
@@ -58,8 +61,10 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('participant', $idOrganisateur);
         }
         if($sortiesPassees == true){
-            $qb->andWhere('s.etat = :etat')
-                ->setParameter('etat','Passée');
+            $qb //->andWhere('s.etat = :etat')
+                //->setParameter('etat','Passée');
+                ->andWhere($qb->expr()->lt('s.dateHeureDebut', ':aujourdhui'))
+                ->setParameter('aujourdhui', $aujourdhui);
         }
 
         $query = $qb->getQuery();

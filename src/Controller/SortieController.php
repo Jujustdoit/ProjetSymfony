@@ -210,6 +210,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/inscription/{idSortie}/{idUser}', name: 'inscription')]
+    #[Security('is_granted(\'ROLE_PARTICIPANT\')')]
     //*************Création des enregistrements de la sortie avec ID de la sortie et les ID Participants****************
     public function register(
         int                    $idSortie,
@@ -240,6 +241,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/desinscription/{idSortie}/{idUser}', name: 'desinscription')]
+    #[Security('is_granted(\'ROLE_PARTICIPANT\')')]
     //*********************Désinscription d'une sortie avec ID sortie et ID participant ********************************
     public function unsubscribe(
         int                    $idSortie,

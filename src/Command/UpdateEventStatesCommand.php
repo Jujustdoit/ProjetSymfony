@@ -14,7 +14,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Commande à exécuter à chaque minute pour l'éternité, avec un cron job à créer sur le serveur de prod
  * Cette commande permet de tenir à jour les états des sorties
- *
  * Class UpdateEventStatesCommand
  * @package App\Command
  */
@@ -32,7 +31,6 @@ class UpdateEventStatesCommand extends Command
 
     /**
      * On utilise l'injection de dépendance pour récupérer plein de classes utiles
-     *
      * UpdateEventStatesCommand constructor.
      * @param EntityManagerInterface $em
      * @param EventStateHelper $stateHelper

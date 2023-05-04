@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Gestion des lieux de sortie {% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+        <h2>Gérer les lieux de sorties</h2>
+
+        <h4>Filtrer les lieux</h4>
+
+        {{ form_start(searchLieuForm) }}
+        <div>
+            {{ form_label(searchLieuForm.nomLieu) }}
+            {{ form_widget(searchLieuForm.nomLieu) }}
+            {{ form_errors(searchLieuForm.nomLieu) }}
+            <button type="submit" name="rechercher">Rechercher</button>
+        </div>
+        {{ form_end(searchLieuForm) }}
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Ville</th>
+                <th>Nom du lieu</th>
+                <th>Rue</th>
+                <th>Latitude</th>
+                <th>longitude</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            {% for lieu in lieux %}
+                <tr>
+                    <td>{{ lieu.ville.nom }}</td>
+                    <td>{{ lieu.nom }}</td>
+                    <td>{{ lieu.rue }}</td>
+                    <td>{{ lieu.latitude }}</td>
+                    <td>{{ lieu.longitude }}</td>
+                    <td>
+                        <a href="{{ path('lieu_delete', {'id': lieu.id }) }}">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>
+                    {{ form_start(lieuForm) }}
+
+                    {{ form_widget(lieuForm.ville) }}
+                    {{ form_errors(lieuForm.ville) }}
+
+                </td>
+                <td>
+                    {{ form_widget(lieuForm.nom) }}
+                    {{ form_errors(lieuForm.nom) }}
+                </td>
+                <td>
+                    {{ form_widget(lieuForm.rue) }}
+                    {{ form_errors(lieuForm.rue) }}
+                </td>
+                <td>
+                    {{ form_widget(lieuForm.latitude) }}
+                    {{ form_errors(lieuForm.latitude) }}
+                </td>
+                <td>
+                    {{ form_widget(lieuForm.longitude) }}
+                    {{ form_errors(lieuForm.longitude) }}
+                </td>
+                <td>
+                    <a href="{{ path('lieu_index') }}" onclick="document.getElementById('submitLieuForm').click(); return false;">Ajouter</a>
+
+                    <input type="submit" id="submitLieuForm" name="submitLieuForm" style="display: none;">
+
+                    {{ form_end(lieuForm) }}
+
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{parent()}} | Modification du profil{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <h2>Modifier mon profil ({{ app.user.pseudo }}) ✅</h2>
+
+    {{ form_start(form) }}
+        {{ form_row(form.nom) }}
+        {{ form_row(form.prenom) }}
+        {{ form_row(form.pseudo) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.password) }}
+        {{ form_row(form.telephone) }}
+        {{ form_row(form.enregistrer) }}
+    {{ form_end(form) }}
+</div>
+{% endblock %}

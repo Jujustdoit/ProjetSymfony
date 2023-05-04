@@ -65,7 +65,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(inversedBy: 'participantsCampus')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?campus $campus = null;
+    private ?Campus $campus = null;
 
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
     private Collection $sorties;
@@ -238,7 +238,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->campus;
     }
 
-    public function setCampus(?campus $campus): self
+    public function setCampus(?Campus $campus): self
     {
         $this->campus = $campus;
 

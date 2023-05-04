@@ -22,6 +22,19 @@ class LieuRepository extends ServiceEntityRepository
         parent::__construct($registry, Lieu::class);
     }
 
+    public function filtrer($nom) {
+        $qb = $this->createQueryBuilder('l');
+
+        if ($nom) {
+            $qb->andWhere($qb->expr()->like('l.nom',':stringRecherche'))
+                ->setParameter('stringRecherche',"%{$nom}%");
+        }
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+    }
+
     public function save(Lieu $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

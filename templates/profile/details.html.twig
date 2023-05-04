@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{%block title %}
+    Profile
+{% endblock %}
+
+{% block body %}
+    <h3>{{ organisateur.pseudo }}</h3>
+
+    <div>
+
+        <p>
+            <strong>Prénom : </strong> : {{  organisateur.prenom }}
+        </p>
+        <p>
+            <strong>Nom : </strong>{{ organisateur.nom}}
+        </p>
+        <p>
+            <strong>Téléphone : </strong>{{ organisateur.telephone}}
+        </p>
+        <p>
+            <strong>Email : </strong>{{ organisateur.email}}
+        </p>
+        <p>
+            <strong>Campus : </strong>{{ organisateur.campus.nom}}
+        </p>
+
+
+        <a href="{{ path('sortie_home') }}"><button>Retour</button></a>
+    </div>
+
+{% endblock %}

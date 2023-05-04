@@ -94,21 +94,24 @@ class CampusController extends AbstractController
     #[Route('/uploadCsv', name: 'uploadCsv')]
     public function uploadCsv(ParameterBagInterface $parameterBag, CampusRepository $campusRepository, UploadCsvIntegration $uploadCsvIntegration, UserPasswordHasherInterface $userPasswordHasher, Request $request, EntityManagerInterface $entityManager)
     {
-        $filesystem = new Filesystem();
-
-        $dossierCsv = $parameterBag->get('kernel.project_dir') . '/public/upload/participants';
-
         $nouveauxParticipants = [];
 
+        $filesystem = new Filesystem(); // Pour effectuer des actions sur des fichiers (la suppression ici)
+
+        // ParameterBagInterface permet de récupérer le chemin du dossier des fichiers CSV
+        $dossierCsv = $parameterBag->get('kernel.project_dir') . '/public/upload/participants';
+
+        // Finder permet de parcourir et récupérer les fichiers du dossier
         $finder = new Finder();
         $fichiers = $finder->files()->in($dossierCsv);
 
         $formViews = []; // Stocke les vues des formulaires
         $nomFichiers = [];
 
+        // Itération sur les fichiers et création d'un formulaire par fichier
         foreach ($fichiers as $index => $fichier) {
             $nomFichier = $fichier->getFilename();
-            $nomFichiers[] = $nomFichier;
+            $nomFichiers[] = $nomFichier; // Pour l'afficher sur la vue
 
             $form = $this->createFormBuilder()
                 ->add('nomFichier', HiddenType::class, [
@@ -120,10 +123,10 @@ class CampusController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $nomFichier = $form->get('nomFichier')->getData();
-                $uploadCsvIntegration = new UploadCsvIntegration();
+                $nomFichier = $form->get('nomFichier')->getData(); // Récupération du nom de fichier selectionné
+                $uploadCsvIntegration = new UploadCsvIntegration(); // Instance de l'utilitaire
                 $nouveauxParticipants = $uploadCsvIntegration->loadCsvAction($nomFichier, $dossierCsv, $campusRepository, $parameterBag, $userPasswordHasher, $entityManager);
-                $filesystem->remove($dossierCsv . '/' . $nomFichier);
+                $filesystem->remove($dossierCsv . '/' . $nomFichier); // suppression du fichier CSV
                 return $this->redirectToRoute('campus_uploadCsv');
             }
 

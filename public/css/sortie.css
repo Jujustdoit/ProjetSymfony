@@ -126,7 +126,11 @@ button:hover {
     background-color: #ddd;
 }
 
-.espacement {
+form div label {
+    font-weight: bold;
+}
+
+.espacement, p {
     margin-top: 10px;
     margin-bottom: 10px;
 }

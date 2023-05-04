@@ -19,6 +19,9 @@ class ParticipantController extends AbstractController{
     {
         // Récupérer l'utilisateur actuel
         $user = $this->getUser();
+
+        //Récupère le mot de passe actuel de l'utilisateur depuis la base de données
+        $user=$entityManager->getRepository(User::class)->find($this->getUser())->getPassword();
    
         // Créer un formulaire pour la modification de profil
         $form = $this->createForm(ProfileUpdateType::class, data: $user);
@@ -27,6 +30,10 @@ class ParticipantController extends AbstractController{
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            //Si le formulaire est soumis et valide, enregistre les modifications
+            $user=$form->getData();
+
             // Vérifier si le pseudo est unique
             $existingParticipant = $entityManager->getRepository(Participant::class)->findOneBy(['pseudo' => $user->getPseudo()]);
 

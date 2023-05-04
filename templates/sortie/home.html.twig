@@ -93,13 +93,13 @@
                         {% endif %}
 
                         {% if (sortie.etat.libelle == 'Ouverte')%}
-                            - <a href="{{ path('sortie_inscription', {'idSortie':sortie.id, 'idUser':app.user.id}) }}">S'inscrire</a>
+                            - <a href="{{ path('sortie_inscription', {'idSortie':sortie.id}) }}">S'inscrire</a>
                         {% endif %}
 
                         {% if (sortie.etat.libelle == 'Ouverte') or (sortie.etat.libelle == 'Clôturée') %}
 
                             {% if app.user in sortie.participants %}
-                                - <a href="{{ path('sortie_desinscription', {'idSortie':sortie.id, 'idUser':app.user.id}) }}">Se désister</a>
+                                - <a href="{{ path('sortie_desinscription', {'idSortie':sortie.id}) }}">Se désister</a>
                             {% endif %}
 
                         {% endif %}

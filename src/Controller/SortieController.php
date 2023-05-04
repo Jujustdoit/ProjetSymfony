@@ -208,24 +208,23 @@ class SortieController extends AbstractController
         return $this->render('sortie/show.html.twig', ['sortie' => $sortie, 'participants' => $participants]);
     }
 
-    #[Route('/inscription/{idSortie}/{idUser}', name: 'inscription')]
+    #[Route('/inscription/{idSortie}', name: 'inscription')]
     #[Security('is_granted(\'ROLE_PARTICIPANT\')')]
     //*************Création des enregistrements de la sortie avec ID de la sortie et les ID Participants****************
     public function register(
         int                    $idSortie,
-        int                    $idUser,
         ParticipantRepository  $participantRepository,
         SortieRepository       $sortieRepository,
         EntityManagerInterface $entityManager,
         Request                $request,
     )
     {
+        //Recherche de la personne connectée
+        $user = $this->getUser();
         //Recherche de la sortie via son ID
         $sortie = $sortieRepository->find($idSortie);
         //Recherche du participant via son ID
-        $participant = $participantRepository->find($idUser);
-        //Recherche de la personne connectée
-        $user = $this->getUser();
+        $participant = $participantRepository->find($user);
         //Est-ce que quelqu'un essaye de t'inscrire à ton insu ?
         if ($user === $participant) {
             if ($sortie->getNbInscriptionsMax() > count($sortie->getParticipants()) && $sortie->getDateLimiteInscription() > new DateTime('NOW')) {
@@ -246,23 +245,22 @@ class SortieController extends AbstractController
         }
     }
 
-    #[Route('/desinscription/{idSortie}/{idUser}', name: 'desinscription')]
+    #[Route('/desinscription/{idSortie}', name: 'desinscription')]
     #[Security('is_granted(\'ROLE_PARTICIPANT\')')]
     //*********************Désinscription d'une sortie avec ID sortie et ID participant ********************************
     public function unsubscribe(
         int                    $idSortie,
-        int                    $idUser,
         ParticipantRepository  $participantRepository,
         SortieRepository       $sortiesRepository,
         EntityManagerInterface $entityManager,
         Request                $request
     )
     {
+        $user = $this->getUser();
         //Recherche de la sortie via son ID
         $sortie = $sortiesRepository->find($idSortie);
         //Recherche du participant via son ID
-        $participant = $participantRepository->find($idUser);
-        $user = $this->getUser();
+        $participant = $participantRepository->find($user);
         //Est-ce que quelqu'un essaye de te désinscrire à ton insu ?
         if ($user === $participant) {
             if ($sortie->getDateLimiteInscription() > new DateTime('NOW')) {

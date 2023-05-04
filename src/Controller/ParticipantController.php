@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 use App\Form\ProfileUpdateType;
+use App\Repository\ParticipantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,4 +52,19 @@ class ParticipantController extends AbstractController{
              return $this->render('profile/edit.html.twig', [ 
                 'form' => $form->createView(), 
              ]);
-             } }
+
+    }
+
+    #[Route("/profile/{id}", name:"profile_details")]
+
+    public function details(int $id, ParticipantRepository $participantRepository){
+        //fetch participant in database
+        $organisateur=$participantRepository->find($id) ;
+
+        return $this->render('/profile/show.html.twig', [
+            'organisateur' => $organisateur,
+        ]) ;
+    }
+
+}
+

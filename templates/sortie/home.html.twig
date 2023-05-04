@@ -85,7 +85,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="">{{ sortie.organisateur.nom }}</a>
+                        <a href="{{ path("profile_details",{'id' :sortie.organisateur.id} )}}">{{ sortie.organisateur.nom }}</a>
                     </td>
                     <td>
                         {% if (sortie.etat.libelle) != "Annulée" %}

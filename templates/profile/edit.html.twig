@@ -2,9 +2,9 @@
 
 {% block title %}{{parent()}} | Modification du profil{% endblock %}
 
-{% block body %}
+{% block body_content %}
 
-<div class="container">
+<div class="center-div">
     <h2>Modifier mon profil ({{ app.user.pseudo }}) ✅</h2>
 
     {{ form_start(form) }}

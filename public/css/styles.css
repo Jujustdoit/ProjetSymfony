@@ -53,6 +53,12 @@ body{
     float :right ;
 }
 
+
+@media (min-width: 768px){
+    .mobile-display-only{
+        display:none;
+    }
+}
 @media (max-width: 767px) {
     .mobile-display{
         display:none;

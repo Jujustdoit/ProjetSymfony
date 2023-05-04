@@ -16,7 +16,7 @@
 
         <h2>Filtrer les sorties</h2>
         <div class = "filters-container">
-            <button onclick="toggleFilters()">Filtres</button>
+            <button  class="mobile-display" onclick="toggleFilters()">Filtres</button>
             <div id ="filter-bar" >
                 {{ form_start(criteres) }}
                  <div>
@@ -68,12 +68,14 @@
             <tr>
                 <th>Nom de la sortie</th>
                 <th>Date de la sortie</th>
-                <th>Clôture</th>
-                <th>Inscrits/places</th>
-                <th>Etat</th>
-                <th>Inscrit</th>
-                <th>Organisateur</th>
-                <th>Actions</th>
+                <th class="mobile-display" >Clôture</th>
+                <th class="mobile-display" >Inscrits/places</th>
+                <th class="mobile-display" >Etat</th>
+                <th class="mobile-display" >Inscrit</th>
+                <th class="mobile-display" >Organisateur</th>
+                <th class="mobile-display" >Actions</th>
+                <th class="mobile-display-only" >Lieu</th>
+
             </tr>
             </thead>
             <tbody>
@@ -81,23 +83,23 @@
                 <tr>
                     <td>{{ sortie.nom }}</td>
                     <td>{{ sortie.dateHeureDebut|date('d/m/Y h:i') }}</td>
-                    <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
-                    <td>{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</td>
-                    <td>
+                    <td class="mobile-display" >{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
+                    <td class="mobile-display" >{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</td>
+                    <td class="mobile-display" >
                         {{ sortie.etat.libelle }}
                         {% if sortie.etat.libelle == "Annulée" %}
                             - {{ sortie.infosSortie }}
                         {% endif %}
                     </td>
-                    <td>
+                    <td class="mobile-display" >
                         {% if app.user in sortie.participants %}
                             X
                         {% endif %}
                     </td>
-                    <td>
+                    <td class="mobile-display" >
                         <a href="{{ path("profile_details",{'id' :sortie.organisateur.id} )}}">{{ sortie.organisateur.nom }}</a>
                     </td>
-                    <td>
+                    <td class="mobile-display" >
                         {% if (sortie.etat.libelle) != "Annulée" %}
                             <a href="{{ path('sortie_show', {'id': sortie.id }) }}">Afficher</a>
                         {% endif %}
@@ -124,6 +126,7 @@
                             {% endif %}
                         {% endif %}
                     </td>
+                    <td  class="mobile-display-only" >{{ sortie.lieu.nom }}</td>
                 </tr>
             {% endfor %}
             </tbody>

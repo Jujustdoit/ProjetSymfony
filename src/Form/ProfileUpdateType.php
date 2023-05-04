@@ -19,28 +19,43 @@ class ProfileUpdateType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', TextType::class)
-            ->add('prenom', TextType::class)
-            ->add('pseudo', TextType::class)
-            ->add('email', EmailType::class)
-            ->add('telephone', TelType::class)
+            ->add('nom', TextType::class, ['label'=>'Nom : '])
+            ->add('prenom', TextType::class, ['label'=>'Prénom : '])
+            ->add('pseudo', TextType::class, ['label'=>'Pseudo : '])
+            ->add('email', EmailType::class, ['label'=>'Email : '])
+            ->add('telephone', TelType::class, ['label'=>'Téléphone : '])
             ->add('password', RepeatedType::class, [
+<<<<<<< HEAD
                 'type'=> PasswordType::class,
+=======
+                'type'=> PasswordType::class/*,
+>>>>>>> preProd
                 'first_option'=>[
                     'label' => 'Nouveau mot de passe :',
                     'attr'=>[
                         'maxlength'=>50
+<<<<<<< HEAD
                         ]
                     ],
+=======
+                    ]
+                ],
+>>>>>>> preProd
                 'second_option'=>[
                     'label' => 'Confirmez le mot de passe',
                     'attr'=>[
                         'maxlength'=>50
+<<<<<<< HEAD
                         ]
                     ],
             ])
+=======
+                    ]
+                ],
+            */])
+>>>>>>> preProd
             ->add('enregistrer', SubmitType::class)
-            
+
         ;
     }
 

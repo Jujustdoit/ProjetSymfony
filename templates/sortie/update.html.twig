@@ -10,8 +10,6 @@
         <h3>Modifier une sortie</h3>
 
         {{ form_start(sortieForm) }}
-        {{ form_start(villeForm) }}
-        {{ form_start(lieuForm) }}
 
         <div>
             {{ form_label(sortieForm.nom) }}
@@ -51,39 +49,9 @@
         </div>
 
         <div>
-            {{ form_label(villeForm.nom) }}
-            {{ form_widget(villeForm.nom) }}
-            {{ form_errors(villeForm.nom) }}
-        </div>
-
-        <div>
-            {{ form_label(lieuForm.nom) }}
-            {{ form_widget(lieuForm.nom) }}
-            {{ form_errors(lieuForm.nom) }}
-        </div>
-
-        <div>
-            {{ form_label(lieuForm.rue) }}
-            {{ form_widget(lieuForm.rue) }}
-            {{ form_errors(lieuForm.rue) }}
-        </div>
-
-        <div>
-            {{ form_label(villeForm.codePostal) }}
-            {{ form_widget(villeForm.codePostal) }}
-            {{ form_errors(villeForm.codePostal) }}
-        </div>
-
-        <div>
-            {{ form_label(lieuForm.latitude) }}
-            {{ form_widget(lieuForm.latitude) }}
-            {{ form_errors(lieuForm.latitude) }}
-        </div>
-
-        <div>
-            {{ form_label(lieuForm.longitude) }}
-            {{ form_widget(lieuForm.longitude) }}
-            {{ form_errors(lieuForm.longitude) }}
+            {{ form_label(sortieForm.lieu) }}
+            {{ form_widget(sortieForm.lieu) }}
+            {{ form_errors(sortieForm.lieu) }}
         </div>
 
         <div>
@@ -102,8 +70,6 @@
             {{ form_label(sortieForm.supprimer) }}
             {{ form_widget(sortieForm.supprimer) }}#}
 
-            {{ form_end(villeForm) }}
-            {{ form_end(lieuForm) }}
             {{ form_end(sortieForm) }}
 
             <button type="button">

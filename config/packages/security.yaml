@@ -14,8 +14,8 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
             form_login:
-                login_path: app_login
-                check_path: app_login
+                #login_path: app_login
+                #check_path: app_login
                 default_target_path: sortie_home
 
         main:

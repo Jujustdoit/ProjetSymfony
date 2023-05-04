@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Gestion des chargements CSV{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+    <h2>Gérer les intégrations</h2>
+
+    <h3>Fichiers à traiter</h3>
+    <div class="espacement">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Fichier</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            {% for fichier in fichiersCsv %}
+                <tr>
+                    <td>
+                        {{ fichier }}
+                    </td>
+                    <td>
+                        {#  loop.index0 permet de récupérer l'index de la boucle à partir de 0 #}
+                        {{ form_start(formViews[loop.index0]) }}
+                        {{ form_widget(formViews[loop.index0].nomFichier) }}
+                        <button type="submit">Traiter</button>
+                        {{ form_end(formViews[loop.index0]) }}
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}
+
+

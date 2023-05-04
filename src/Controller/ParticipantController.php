@@ -20,14 +20,20 @@ class ParticipantController extends AbstractController{
         // Récupérer l'utilisateur actuel
         $user = $this->getUser();
 
-        //Récupère le mot de passe actuel de l'utilisateur depuis la base de données
-        $user=$entityManager->getRepository(User::class)->find($this->getUser())->getPassword();
+        //Récupération du mot de passe de l'utilisateur 
+        $userCopiePassword = $user->getPassword();
    
         // Créer un formulaire pour la modification de profil
         $form = $this->createForm(ProfileUpdateType::class, data: $user);
    
         // Traiter la soumission du formulaire
         $form->handleRequest($request);
+
+        //Teste du mot de passe soumit
+        if (!isnull($user->getPassword)) {
+            $user->setPassword($this->passwordEncoder->encodePassword($user, $password));
+        }else{$user->setPassword($userCopiePassword);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
 

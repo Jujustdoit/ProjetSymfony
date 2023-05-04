@@ -66,7 +66,8 @@
         <table class="table">
             <thead>
             <tr>
-                <th>Nom de la sortie</th>
+                <th class="mobile-display-only" >Nom de la sortie</th>
+                <th class="mobile-display">Nom de la sortie</th>
                 <th>Date de la sortie</th>
                 <th class="mobile-display" >Clôture</th>
                 <th class="mobile-display" >Inscrits/places</th>
@@ -81,7 +82,11 @@
             <tbody>
             {% for sortie in sorties %}
                 <tr>
-                    <td>{{ sortie.nom }}</td>
+                    <td class="mobile-display">{{ sortie.nom }}</td>
+                    <td class="mobile-display-only">{% if (sortie.etat.libelle) != "Annulée" %}
+                        <a href="{{ path('sortie_show', {'id': sortie.id }) }}">{{ sortie.nom }}</a>
+                    </td>
+                    {% endif %}
                     <td>{{ sortie.dateHeureDebut|date('d/m/Y h:i') }}</td>
                     <td class="mobile-display" >{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
                     <td class="mobile-display" >{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</td>

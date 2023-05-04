@@ -46,7 +46,7 @@ class Sortie
     #[ORM\JoinColumn(nullable: false)]
     private ?Etat $etat = null;
 
-    #[ORM\ManyToOne(inversedBy: 'Sorties')]
+    #[ORM\ManyToOne(inversedBy: 'Sorties', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Lieu $lieu = null;
 

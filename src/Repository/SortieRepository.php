@@ -54,13 +54,13 @@ class SortieRepository extends ServiceEntityRepository
                 ->andWhere($qb->expr()->isMemberOf(':participant', 's.participants'))
                 ->setParameter('participant', $idOrganisateur);
         }
-        if($inscrit == false && $pasInscrit == true) {
+        if(!$inscrit && $pasInscrit) {
             $qb->addSelect('p')
                 ->leftJoin('s.participants', 'p')
                 ->andWhere(':participant NOT MEMBER OF s.participants')
                 ->setParameter('participant', $idOrganisateur);
         }
-        if($sortiesPassees == true){
+        if($sortiesPassees){
             $qb //->andWhere('s.etat = :etat')
                 //->setParameter('etat','Passée');
                 ->andWhere($qb->expr()->lt('s.dateHeureDebut', ':aujourdhui'))

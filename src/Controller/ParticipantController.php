@@ -61,7 +61,7 @@ class ParticipantController extends AbstractController{
         //fetch participant in database
         $organisateur=$participantRepository->find($id) ;
 
-        return $this->render('/profile/show.html.twig', [
+        return $this->render('/profile/details.html.twig', [
             'organisateur' => $organisateur,
         ]) ;
     }

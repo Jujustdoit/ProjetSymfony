@@ -15,7 +15,7 @@
         </div>
 
         <h2>Filtrer les sorties</h2>
-        <div class = "filters-container">
+        <div class = "filters-container" style="text-align: center">
             <button  class="mobile-display" onclick="toggleFilters()">Filtres</button>
             <div id ="filter-bar" >
                 {{ form_start(criteres) }}
@@ -137,7 +137,9 @@
             </tbody>
         </table>
 
-        <a class="mobile-display" href="{{ path('sortie_create') }}"><button>Créer une sortie</button></a>
+         <div class="center-div" style="text-align: center">
+             <a class="mobile-display" href="{{ path('sortie_create') }}"><button>Créer une sortie</button></a>
+         </div>
 
 
 {% endblock %}
